@@ -1,0 +1,60 @@
+{
+  "name": "redistimeseries-js",
+  "version": "1.0.0",
+  "description": "JavaScript client for RedisTimeSeries",
+  "author": "Milos Nikolovski",
+  "license": "MIT",
+
+  "homepage": "https://github.com/nikolovskimilos/redistimeseries#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikolovskimilos/redistimeseries.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nikolovskimilos/redistimeseries/issues"
+  },
+
+  "keywords": [
+    "redis",
+    "redis-client",
+    "timeseries",
+    "javascript"
+  ],
+  
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_PATH=src/ jest --env=jsdom",
+    "test-coverage": "NODE_PATH=src/ jest --env=jsdom --coverage",
+    "test-watch": "NODE_PATH=src/ jest --watchAll --env=jsdom --bail"
+  },
+  
+  "dependencies": {
+    "redis": "^2.8.0"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0"
+  },
+
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ],
+    "coverageDirectory": "./coverage-report",
+    "testMatch": [
+      "<rootDir>/tests/**/?(*.)(spec|test).js"
+    ],
+    "testEnvironment": "node",
+    "moduleDirectories": [
+      "node_modules",
+      "./src/",
+      "./tests/"
+    ],
+    "moduleFileExtensions": [
+      "js" 
+    ],
+    "testPathIgnorePatterns": [
+      "/tests/__mocks__/"
+    ]
+  }
+
+}
