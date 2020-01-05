@@ -4,13 +4,13 @@
   "description": "JavaScript client for RedisTimeSeries",
   "author": "Milos Nikolovski",
   "license": "MIT",
-  "homepage": "https://github.com/nikolovskimilos/redistimeseries#readme",
+  "homepage": "https://github.com/nikolovskimilos/redistimeseries-js#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nikolovskimilos/redistimeseries.git"
+    "url": "git+https://github.com/nikolovskimilos/redistimeseries-js.git"
   },
   "bugs": {
-    "url": "https://github.com/nikolovskimilos/redistimeseries/issues"
+    "url": "https://github.com/nikolovskimilos/redistimeseries-js/issues"
   },
   "keywords": [
     "redis",
@@ -21,6 +21,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint --color ./src ./tests",
+    "lint-fix": "eslint --fix --color ./src ./tests",
     "test": "NODE_PATH=src/ jest --env=jsdom",
     "test-coverage": "NODE_PATH=src/ jest --env=jsdom --coverage",
     "test-watch": "NODE_PATH=src/ jest --watchAll --env=jsdom --bail"
@@ -33,6 +34,37 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.19.1",
     "jest": "^24.9.0"
+  },
+  "eslintConfig": {
+    "extends": "airbnb-base",
+    "root": true,
+    "env": {
+      "node": true,
+      "jest": true
+    },
+    "plugins": ["import"],
+    "parserOptions": {
+      "ecmaVersion": 8
+    },
+    "rules": {
+      "comma-dangle": [
+        "error",
+        "never"
+      ],
+      "max-len": [
+        "error", 
+        { 
+          "code": 125,
+          "ignoreComments": true 
+        }
+      ],
+      "no-debugger": 1,
+      "no-underscore-dangle": 0,
+      "object-curly-spacing": 0,
+      "object-curly-newline": 0,
+      "no-plusplus": 0,
+      "class-methods-use-this": 0
+    }
   },
   "jest": {
     "collectCoverageFrom": [

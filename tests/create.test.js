@@ -5,6 +5,9 @@ const { commands, keywords } = require('../src/constants');
 const RedisTimeSeries = require('../src/RedisTimeSeries');
 
 
+const { RETENTION, LABELS, UNCOMPRESSED } = keywords;
+const { TS_CREATE } = commands;
+
 const SIGN_SPACE = ' ';
 const TEST_OPTIONS = {
   host: 'localhost',
@@ -13,7 +16,7 @@ const TEST_OPTIONS = {
 const TEST_PARAMS = {
   key: 'sometestkey',
   retention: 60,
-  labels: { 
+  labels: {
     room: 'livingroom',
     section: 2
   },
@@ -26,7 +29,7 @@ let rts = null;
 describe('create method tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     rts = new RedisTimeSeries(TEST_OPTIONS);
     rts.connect(TEST_OPTIONS);
   });
@@ -34,7 +37,7 @@ describe('create method tests', () => {
 
   it('should create time series', async () => {
     const { key } = TEST_PARAMS;
-    const query = `${commands.TS_CREATE} ${TEST_PARAMS.key}`;
+    const query = `${TS_CREATE} ${TEST_PARAMS.key}`;
 
     await rts.create(key);
 
@@ -44,8 +47,7 @@ describe('create method tests', () => {
 
   it('should create time series with retention', async () => {
     const { key, retention } = TEST_PARAMS;
-    const { RETENTION } = keywords;
-    const query = `${commands.TS_CREATE} ${key} ${RETENTION} ${retention}`;
+    const query = `${TS_CREATE} ${key} ${RETENTION} ${retention}`;
 
     await rts.create(key, { retention });
 
@@ -55,7 +57,7 @@ describe('create method tests', () => {
 
   it('should create time series with labels', async () => {
     const { key, labels } = TEST_PARAMS;
-    const query = `${commands.TS_CREATE} ${key} ${keywords.LABELS} room ${labels.room} section ${labels.section}`;
+    const query = `${TS_CREATE} ${key} ${keywords.LABELS} room ${labels.room} section ${labels.section}`;
 
     await rts.create(key, { labels });
 
@@ -65,9 +67,8 @@ describe('create method tests', () => {
 
   it('should create time series with uncompressed flag', async () => {
     const { key, uncompressed } = TEST_PARAMS;
-    const { UNCOMPRESSED } = keywords;
 
-    const query = `${commands.TS_CREATE} ${key} ${UNCOMPRESSED}`;
+    const query = `${TS_CREATE} ${key} ${UNCOMPRESSED}`;
 
     await rts.create(key, { uncompressed });
 
@@ -77,8 +78,9 @@ describe('create method tests', () => {
 
   it('should create time series with retention and labels', async () => {
     const { key, retention, labels } = TEST_PARAMS;
-    const { RETENTION, LABELS } = keywords;
-    const query = `${commands.TS_CREATE} ${key} ${RETENTION} ${retention} ${LABELS} room ${labels.room} section ${labels.section}`;
+
+    const labelsQuery = `${LABELS} room ${labels.room} section ${labels.section}`;
+    const query = `${TS_CREATE} ${key} ${RETENTION} ${retention} ${labelsQuery}`;
 
     await rts.create(key, { retention, labels });
 
@@ -88,8 +90,9 @@ describe('create method tests', () => {
 
   it('should create time series with retention, labels and uncompressed flag', async () => {
     const { key, retention, labels, uncompressed } = TEST_PARAMS;
-    const { RETENTION, LABELS, UNCOMPRESSED } = keywords;
-    const query = `${commands.TS_CREATE} ${key} ${RETENTION} ${retention} ${LABELS} room ${labels.room} section ${labels.section} ${UNCOMPRESSED}`;
+
+    const labelsQuery = `${LABELS} room ${labels.room} section ${labels.section}`;
+    const query = `${TS_CREATE} ${key} ${RETENTION} ${retention} ${labelsQuery} ${UNCOMPRESSED}`;
 
     await rts.create(key, { retention, labels, uncompressed });
 
@@ -112,5 +115,4 @@ describe('create method tests', () => {
   it('should throw an error, uncompressed flag is not valid', async () => {
     await expect(rts.create(TEST_PARAMS.key, { uncompressed: TEST_PARAMS.key })).rejects.toThrow();
   });
-
 });

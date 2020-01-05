@@ -4,6 +4,9 @@ const RedisMock = require('./__mocks__/redis');
 const { commands, keywords } = require('../src/constants');
 const RedisTimeSeries = require('../src/RedisTimeSeries');
 
+const { RETENTION, LABELS } = keywords;
+const { TS_ADD } = commands;
+
 
 const SIGN_SPACE = ' ';
 const TEST_OPTIONS = {
@@ -13,12 +16,13 @@ const TEST_OPTIONS = {
 const TEST_PARAMS = {
   key: 'sometestkey',
   retention: 60,
-  labels: { 
+  labels: {
     room: 'livingroom',
     section: 2
-  }, 
+  },
   value: 17.4,
-  timestamp: Date.now()
+  timestamp: Date.now(),
+  uncompressed: true
 };
 
 let rts = null;
@@ -27,14 +31,14 @@ let rts = null;
 describe('add method tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     rts = new RedisTimeSeries(TEST_OPTIONS);
     rts.connect(TEST_OPTIONS);
   });
 
   it('should add a value to time series', async () => {
     const { key, timestamp, value } = TEST_PARAMS;
-    const query = `${commands.TS_ADD} ${key} ${timestamp} ${value}`;
+    const query = `${TS_ADD} ${key} ${timestamp} ${value}`;
 
     await rts.add(key, timestamp, value);
 
@@ -44,8 +48,7 @@ describe('add method tests', () => {
 
   it('should add a value time series with retention', async () => {
     const { key, timestamp, value, retention } = TEST_PARAMS;
-    const { RETENTION } = keywords;
-    const query = `${commands.TS_ADD} ${key} ${timestamp} ${value} ${RETENTION} ${retention}`;
+    const query = `${TS_ADD} ${key} ${timestamp} ${value} ${RETENTION} ${retention}`;
 
     await rts.add(key, timestamp, value, { retention });
 
@@ -55,8 +58,9 @@ describe('add method tests', () => {
 
   it('should add a value time series with labels', async () => {
     const { key, timestamp, value, labels } = TEST_PARAMS;
-    const { LABELS } = keywords;
-    const query = `${commands.TS_ADD} ${key} ${timestamp} ${value} ${LABELS} room ${labels.room} section ${labels.section}`;
+
+    const labelsQuery = `${LABELS} room ${labels.room} section ${labels.section}`;
+    const query = `${TS_ADD} ${key} ${timestamp} ${value} ${labelsQuery}`;
 
     await rts.add(key, timestamp, value, { labels });
 
@@ -66,8 +70,9 @@ describe('add method tests', () => {
 
   it('should add a value time series with retention and labels', async () => {
     const { key, timestamp, value, retention, labels } = TEST_PARAMS;
-    const { LABELS, RETENTION } = keywords;
-    const query = `${commands.TS_ADD} ${key} ${timestamp} ${value} ${RETENTION} ${retention} ${LABELS} room ${labels.room} section ${labels.section}`;
+
+    const labelsQuery = `${LABELS} room ${labels.room} section ${labels.section}`;
+    const query = `${TS_ADD} ${key} ${timestamp} ${value} ${RETENTION} ${retention} ${labelsQuery}`;
 
     await rts.add(key, timestamp, value, { retention, labels });
 
@@ -88,6 +93,7 @@ describe('add method tests', () => {
   });
 
   it('should throw an error, value is not valid', async () => {
-    await expect(rts.add(TEST_PARAMS.key, TEST_PARAMS.timestamp, TEST_PARAMS.uncompressed)).rejects.toThrow();
+    const { key, timestamp, uncompressed } = TEST_PARAMS;
+    await expect(rts.add(key, timestamp, uncompressed)).rejects.toThrow();
   });
 });

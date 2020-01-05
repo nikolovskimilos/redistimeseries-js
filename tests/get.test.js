@@ -1,7 +1,7 @@
 
 const RedisMock = require('./__mocks__/redis');
 
-const { commands, keywords } = require('../src/constants');
+const { commands } = require('../src/constants');
 const RedisTimeSeries = require('../src/RedisTimeSeries');
 
 const { TS_GET } = commands;
@@ -22,7 +22,7 @@ let rts = null;
 describe('get method tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     rts = new RedisTimeSeries(TEST_OPTIONS);
     rts.connect(TEST_OPTIONS);
   });

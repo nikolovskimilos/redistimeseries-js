@@ -15,10 +15,10 @@ const TEST_OPTIONS = {
 const TEST_PARAMS = {
   key: 'sometestkey',
   retention: 60,
-  labels: { 
+  labels: {
     room: 'livingroom',
     section: 2
-  }, 
+  },
   value: 17.4,
   timestamp: Date.now()
 };
@@ -29,7 +29,7 @@ let rts = null;
 describe('decrBy method tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     rts = new RedisTimeSeries(TEST_OPTIONS);
     rts.connect(TEST_OPTIONS);
   });

@@ -101,13 +101,13 @@ class RedisTimeSeries {
       acc.push(value);
       return acc;
     }, params);
-    
+
     const query = Query
       .create(commands.TS_ADD)
       .addParams(...params)
       .build();
 
-    return this.send(...query);   
+    return this.send(...query);
   }
 
 
@@ -127,9 +127,9 @@ class RedisTimeSeries {
       .uncompressed(uncompressed)
       .build();
 
-    return this.send(...query); 
+    return this.send(...query);
   }
-  
+
 
   /**
    * TS.DECRBY key value [TIMESTAMP timestamp] [RETENTION retentionTime] [LABELS field value..] [UNCOMPRESSED]
@@ -147,9 +147,9 @@ class RedisTimeSeries {
       .uncompressed(uncompressed)
       .build();
 
-    return this.send(...query); 
+    return this.send(...query);
   }
-  
+
 
   /**
    * TS.CREATERULE sourceKey destKey AGGREGATION aggregationType timeBucket
@@ -164,10 +164,10 @@ class RedisTimeSeries {
       .aggregation(aggregationType, timeBucket)
       .build();
 
-    return this.send(...query); 
+    return this.send(...query);
   }
 
-  
+
   /**
    * TS.DELETERULE sourceKey destKey
    */
@@ -180,14 +180,14 @@ class RedisTimeSeries {
       .addParams(sourceKey, destKey)
       .build();
 
-    return this.send(...query); 
+    return this.send(...query);
   }
 
 
   /**
    * TS.RANGE key fromTimestamp toTimestamp [COUNT count] [AGGREGATION aggregationType timeBucket]
    */
-  
+
   async range(key, fromTimestamp, toTimestamp, { count, aggregation = {} } = {}) {
     Validator.checkKey(key);
     Validator.checkTimestampRange(fromTimestamp, toTimestamp);
@@ -201,7 +201,7 @@ class RedisTimeSeries {
 
     return this.send(...query);
   }
-  
+
 
   /**
    * TS.MRANGE fromTimestamp toTimestamp [COUNT count] [AGGREGATION aggregationType timeBucket] [WITHLABELS] FILTER filter..
@@ -220,7 +220,7 @@ class RedisTimeSeries {
 
     return this.send(...query);
   }
-  
+
 
   /**
    * TS.GET key
@@ -235,7 +235,7 @@ class RedisTimeSeries {
 
     return this.send(...query);
   }
-  
+
 
   /**
    * TS.MGET FILTER filter...
@@ -248,7 +248,7 @@ class RedisTimeSeries {
 
     return this.send(...query);
   }
-  
+
 
   /**
    * TS.INFO key
@@ -263,7 +263,7 @@ class RedisTimeSeries {
 
     return this.send(...query);
   }
-  
+
 
   /**
    * TS.QUERYINDEX filter...
