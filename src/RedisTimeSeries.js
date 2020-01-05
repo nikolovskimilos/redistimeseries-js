@@ -204,7 +204,7 @@ class RedisTimeSeries {
  	/**
  	 * TS.MRANGE fromTimestamp toTimestamp [COUNT count] [AGGREGATION aggregationType timeBucket] [WITHLABELS] FILTER filter..
  	 */
- 	async mrange(fromTimestamp, toTimestamp, filter, { count, aggregation, withlabels }) {
+ 	async mrange(fromTimestamp, toTimestamp, filter, { count, aggregation, withlabels } = {}) {
     Validator.checkTimestampRange(fromTimestamp, toTimestamp);
 
  		const query = Query
@@ -238,9 +238,9 @@ class RedisTimeSeries {
  	/**
  	 * TS.MGET FILTER filter...
  	 */
- 	async mget(filter) {
+ 	async mget(filter = []) {
  		const query = Query
- 			.create(commands.TS_GET)
+ 			.create(commands.TS_MGET)
  			.filter(filter)
  			.build();
 
@@ -255,7 +255,7 @@ class RedisTimeSeries {
     Validator.checkKey(key);
 
  		const query = Query
- 			.create(commands.TS_GET)
+ 			.create(commands.TS_INFO)
  			.addParams(key)
  			.build();
 
@@ -266,9 +266,9 @@ class RedisTimeSeries {
  	/**
  	 * TS.QUERYINDEX filter...
  	 */
- 	async queryIndex(filter) {
+ 	async queryIndex(filter = []) {
  		const query = Query
- 			.create(commands.TS_GET)
+ 			.create(commands.TS_QUERYINDEX)
  			.pureFilter(filter)
  			.build();
 

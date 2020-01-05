@@ -77,10 +77,6 @@ class Query {
 
 
 	uncompressed(uncompressed = false) {
-		if (Validator.isUndefined(uncompressed)) {
-			return this;
-		}
-
 		if (!Validator.isBoolean(uncompressed)) {
 			throw new Error('Parameter uncompressed is boolean flag');
 		}
@@ -94,10 +90,6 @@ class Query {
 
 
 	withlabels(withlabels = false) {
-		if (Validator.isUndefined(withlabels)) {
-			return this;
-		}
-
 		if (!Validator.isBoolean(withlabels)) {
 			throw new Error('Parameter withlabels is boolean flag');
 		}

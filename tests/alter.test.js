@@ -16,8 +16,7 @@ const TEST_PARAMS = {
 	labels: { 
 		room: 'livingroom',
 		section: 2
-	},
-	uncompressed: true
+	}
 };
 
 let rts = null;
@@ -62,7 +61,7 @@ describe('alter method tests', () => {
 		expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
   });
 
-  it('should create time series with retention and labels', async () => {
+  it('should alter time series with retention and labels', async () => {
 		const { key, retention, labels } = TEST_PARAMS;
 		const { RETENTION, LABELS } = keywords;
   	const query = `${commands.TS_ALTER} ${key} ${RETENTION} ${retention} ${LABELS} room ${labels.room} section ${labels.section}`;
@@ -77,12 +76,7 @@ describe('alter method tests', () => {
 		await expect(rts.alter()).rejects.toThrow();
   });
 
-  it('should throw an error, key is not string', async () => {
+  it('should throw an error, key is not valid', async () => {
 		await expect(rts.alter(TEST_PARAMS.uncompressed)).rejects.toThrow();
   });
-
-  it('should throw an error, retention is not valid', async () => {
-		await expect(rts.alter(TEST_PARAMS.uncompressed, { retention: TEST_PARAMS.key })).rejects.toThrow();
-  });
-
 });

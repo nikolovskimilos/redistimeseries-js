@@ -13,8 +13,12 @@ class Validator {
   }
 
   static checkTimestampRange(fromTimestamp, toTimestamp) {
-    Validator.checkTimestamp(fromTimestamp, 'fromTimestamp');
-    Validator.checkTimestamp(toTimestamp, 'toTimestamp');
+    if (
+    	!Validator.isPositiveInteger(fromTimestamp) ||
+    	!Validator.isPositiveInteger(toTimestamp)
+    ){
+    	throw new Error('fromTimestamp and toTimestamp have to be integers greater than 0');
+    }
 
     if (fromTimestamp > toTimestamp) {
     	throw new Error('toTimestamp has to be greater than fromTimestamp');

@@ -42,8 +42,6 @@ describe('create method tests', () => {
 		expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
   });
 
-
-
 	it('should create time series with retention', async () => {
 		const { key, retention } = TEST_PARAMS;
 		const { RETENTION } = keywords;
@@ -108,11 +106,11 @@ describe('create method tests', () => {
   });
 
   it('should throw an error, retention is not valid', async () => {
-		await expect(rts.create(TEST_PARAMS.uncompressed, { retention: TEST_PARAMS.key })).rejects.toThrow();
+		await expect(rts.create(TEST_PARAMS.key, { retention: TEST_PARAMS.key })).rejects.toThrow();
   });
 
   it('should throw an error, uncompressed flag is not valid', async () => {
-		await expect(rts.create(TEST_PARAMS.uncompressed, { uncompressed: TEST_PARAMS.key })).rejects.toThrow();
+		await expect(rts.create(TEST_PARAMS.key, { uncompressed: TEST_PARAMS.key })).rejects.toThrow();
   });
 
 });
