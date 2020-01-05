@@ -2,7 +2,7 @@
 // Commands
 module.exports = {
 	TS_CREATE: 'TS.CREATE',
-	TS_APPLY: 'TS.APPLY',
+	TS_ALTER: 'TS.ALTER',
 	TS_ADD: 'TS.ADD',
 	TS_INCRBY: 'TS.INCRBY',
 	TS_DECRBY: 'TS.DECRBY',

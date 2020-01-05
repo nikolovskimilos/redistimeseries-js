@@ -1,4 +1,5 @@
 
+// Aggregation types
 module.exports = {
 	AVG: 'avg', 
 	SUM: 'sum', 

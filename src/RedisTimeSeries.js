@@ -1,7 +1,9 @@
 const Redis = require('redis');
 
 const Query = require('./Query');
+const Validator = require('./Validator');
 const { commands } = require('./constants');
+
 
 const SIGN_SPACE = ' ';
 
@@ -17,14 +19,14 @@ class RedisTimeSeries {
 
 
 	connect() {
-		this.client = Redis.createClient(options);
+		this.client = Redis.createClient(this.options);
 	}
 
 	/**
 	 * Send plain command to redis
 	 */
-	async send(command) {
-		return this.redis.send_command(command);
+	async send(...params) {
+		return this.client.send_command(...params);
 	}
 
 
@@ -32,54 +34,66 @@ class RedisTimeSeries {
    * TS.CREATE key [RETENTION retentionTime] [LABELS field value..] [UNCOMPRESSED]
    */
   async create(key, { retention, labels = {}, uncompressed } = {}) {
+    Validator.checkKey(key);
+
   	const query = Query
   		.create(commands.TS_CREATE)
   		.addParams(key)
   		.retention(retention)
   		.labels(labels)
-  		.uncompressed(uncompressed);
-  		.toString()
+  		.uncompressed(uncompressed)
+  		.build();
 
-  	return this.send(query);
+  	return this.send(...query);
   }
 
   /**
    * TS.ALTER key [RETENTION retentionTime] [LABELS field value..]
    */
-  async alter(key, { retention, labels = {} }) {
+  async alter(key, { retention, labels = {} } = {}) {
+    Validator.checkKey(key);
+
   	const query =	Query
   		.create(commands.TS_ALTER)
   		.addParams(key)
   		.retention(retention)
   		.labels(labels)
-  		.toString()
+  		.build();
 
-  	return this.send(query);
+  	return this.send(...query);
   }
 
 	/**
 	 * TS.ADD key timestamp value [RETENTION retentionTime] [LABELS field value..] [UNCOMPRESSED]
 	 */
  	async add(key, timestamp, value, { retention, labels = {}, uncompressed } = {}) {
+    Validator.checkKey(key);
+    Validator.checkTimestamp(timestamp);
+    Validator.checkValue(value);
+
  		const query =	Query
   		.create(commands.TS_ADD)
   		.addParams(key, timestamp, value)
   		.retention(retention)
   		.labels(labels)
   		.uncompressed(uncompressed)
-  		.toString()
+  		.build();
 
-  	return this.send(query);
+  	return this.send(...query);
  	}
 
 
  	/**
  	 * TS.MADD key timestamp value [key timestamp value ...]
  	 */
- 	async madd(...arrayOfObjects = []) {
+ 	async madd(...arrayOfObjects) {
  		const params = [];
 
  		arrayOfObjects.reduce((acc, { key, timestamp, value }) => {
+      Validator.checkKey(key);
+      Validator.checkTimestamp(timestamp);
+      Validator.checkValue(value);
+
  			acc.push(key);
  			acc.push(timestamp);
  			acc.push(value);
@@ -89,9 +103,9 @@ class RedisTimeSeries {
  		const query = Query
  			.create(commands.TS_ADD)
   		.addParams(...params)
-  		.toString();
+  		.build();
 
-  	return this.send(query);		
+  	return this.send(...query);		
  	}
 
 
@@ -99,6 +113,9 @@ class RedisTimeSeries {
  	 * TS.INCRBY key value [TIMESTAMP timestamp] [RETENTION retentionTime] [LABELS field value..] [UNCOMPRESSED]
  	 */
  	async incrBy(key, value, { timestamp, retention, labels = {}, uncompressed } = {}) {
+    Validator.checkKey(key);
+    Validator.checkValue(value);
+
  		const query = Query
  			.create(commands.TS_INCRBY)
  			.addParams(key, value)
@@ -106,9 +123,9 @@ class RedisTimeSeries {
  			.retention(retention)
  			.labels(labels)
  			.uncompressed(uncompressed)
- 			.toString()
+ 			.build();
 
- 		return this.send(query);	
+ 		return this.send(...query);	
  	}
  	
 
@@ -116,6 +133,9 @@ class RedisTimeSeries {
  	 * TS.DECRBY key value [TIMESTAMP timestamp] [RETENTION retentionTime] [LABELS field value..] [UNCOMPRESSED]
  	 */
  	async decrBy(key, value, { timestamp, retention, labels = {}, uncompressed } = {}) {
+    Validator.checkKey(key);
+    Validator.checkValue(value);
+
  		const query = Query
  			.create(commands.TS_DECRBY)
  			.addParams(key, value)
@@ -123,9 +143,9 @@ class RedisTimeSeries {
  			.retention(retention)
  			.labels(labels)
  			.uncompressed(uncompressed)
- 			.toString()
+ 			.build();
 
- 		return this.send(query);	
+ 		return this.send(...query);	
  	}
  	
 
@@ -133,13 +153,16 @@ class RedisTimeSeries {
  	 * TS.CREATERULE sourceKey destKey AGGREGATION aggregationType timeBucket
  	 */
  	async createRule(sourceKey, destKey, aggregation = {}) {
+    Validator.checkKey(sourceKey, 'sourceKey');
+    Validator.checkKey(destKey, 'destKey');
+
  		const query = Query
  			.create(commands.TS_CREATERULE)
  			.addParams(sourceKey, destKey)
  			.aggregation(aggregationType, timeBucket)
- 			.toString()
+ 			.build();
 
- 		return this.send(query);	
+ 		return this.send(...query);	
  	}
 
  	
@@ -147,12 +170,15 @@ class RedisTimeSeries {
  	 * TS.DELETERULE sourceKey destKey
  	 */
  	async deleteRule(sourceKey, destKey, aggregation = {}) {
+    Validator.checkKey(sourceKey, 'sourceKey');
+    Validator.checkKey(destKey, 'destKey');
+
  		const query = Query
  			.create(commands.TS_DELETERULE)
  			.addParams(sourceKey, destKey)
- 			.toString()
+ 			.build();
 
- 		return this.send(query);	
+ 		return this.send(...query);	
  	}
 
 
@@ -161,14 +187,17 @@ class RedisTimeSeries {
  	 */
  	
  	async range(key, fromTimestamp, toTimestamp, { count, aggregation = {} } = {}) {
+    Validator.checkKey(key);
+    Validator.checkTimestampRange(fromTimestamp, toTimestamp);
+
  		const query = Query
  			.create(commands.TS_RANGE)
  			.addParams(key, fromTimestamp, toTimestamp)
  			.count(count)
  			.aggregation(aggregation)
- 			.toString()
+ 			.build();
 
- 		return this.send(query);
+ 		return this.send(...query);
  	}
  	
 
@@ -176,6 +205,8 @@ class RedisTimeSeries {
  	 * TS.MRANGE fromTimestamp toTimestamp [COUNT count] [AGGREGATION aggregationType timeBucket] [WITHLABELS] FILTER filter..
  	 */
  	async mrange(fromTimestamp, toTimestamp, filter, { count, aggregation, withlabels }) {
+    Validator.checkTimestampRange(fromTimestamp, toTimestamp);
+
  		const query = Query
  			.create(commands.TS_MRANGE)
  			.addParams(fromTimestamp, toTimestamp)
@@ -183,9 +214,9 @@ class RedisTimeSeries {
  			.aggregation(aggregation)
  			.withlabels(withlabels)
  			.filter(filter)
- 			.toString()
+ 			.build();
 
- 		return this.send(query);
+ 		return this.send(...query);
  	}
  	
 
@@ -193,12 +224,14 @@ class RedisTimeSeries {
  	 * TS.GET key
  	 */
  	async get(key) {
+    Validator.checkKey(key);
+
  		const query = Query
  			.create(commands.TS_GET)
  			.addParams(key)
- 			.toString()
+ 			.build();
 
- 		return this.send(query);
+ 		return this.send(...query);
  	}
  	
 
@@ -209,9 +242,9 @@ class RedisTimeSeries {
  		const query = Query
  			.create(commands.TS_GET)
  			.filter(filter)
- 			.toString()
+ 			.build();
 
- 		return this.send(query);
+ 		return this.send(...query);
  	}
  	
 
@@ -219,12 +252,14 @@ class RedisTimeSeries {
  	 * TS.INFO key
  	 */
  	async info(key) {
+    Validator.checkKey(key);
+
  		const query = Query
  			.create(commands.TS_GET)
  			.addParams(key)
- 			.toString()
+ 			.build();
 
- 		return this.send(query);
+ 		return this.send(...query);
  	}
  	
 
@@ -235,11 +270,10 @@ class RedisTimeSeries {
  		const query = Query
  			.create(commands.TS_GET)
  			.pureFilter(filter)
- 			.toString()
+ 			.build();
 
- 		return this.send(query);
+ 		return this.send(...query);
  	}
-
 }
 
 module.exports = RedisTimeSeries;

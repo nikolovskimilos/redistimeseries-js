@@ -1,7 +1,9 @@
 
+const Validator = require('./Validator');
 const { commands, keywords, aggregationTypes } = require('./constants');
 
-const SIGN_SPACE = ' ';
+const commandsArray = Object.keys(commands);
+
 
 class Query {
 	constructor(command) {
@@ -11,27 +13,30 @@ class Query {
 
 
 	addParams(...params) {
-		this.param = this.params.concat(params);
+		this.params = this.params.concat(params);
 		return this;
 	}
 
 
 	retention(retention) {
-		if (typeof retention === undefined) {
+		if (Validator.isUndefined(retention)) {
 			return this;
 		}
 
-		if (!Number.isInteger(retention) || retention < 0) {
-			throw new Error('Retention has to be positive integer');
+		if (Validator.isPositiveInteger(retention)) {
+			return this.addParams(keywords.RETENTION, retention);
 		}
 
-		return this.addParams(keywords.RETENTION, retention);
+		throw new Error('Retention has to be positive integer');
 	}
 
 
 	labels(labelValues = {}) {
-		if (Object.keys(labels).length > 0) {
-			Object.keys(labels).forEach((labelName) => this.addParams(labelName, labelValues[labelName]));
+		const labels = Object.keys(labelValues);
+
+		if (labels.length > 0) {
+			this.addParams(keywords.LABELS);
+			labels.forEach((labelName) => this.addParams(labelName, labelValues[labelName]));
 		}
 
 		return this;
@@ -48,37 +53,39 @@ class Query {
 
 
 	count(count) {
-		if (typeof count === undefined) {
+		if (Validator.isUndefined(count)) {
 			return this;
 		}
 
-		if (!Number.isInteger(count) || count < 0) {
-			throw new Error('Count has to be positive integer');
+		if (Validator.isPositiveInteger(count)) {
+			return this.addParams(keywords.COUNT, count);
 		}
 
-		return this.addParams(keywords.COUNT, count);
+		throw new Error('Count has to be positive integer');
 	}
 
 
 	timestamp(timestamp) {
-		if (typeof timestamp === undefined) {
+		if (Validator.isUndefined(timestamp)) {
 			return this;
 		}
 
-		if (!Number.isInteger(timestamp) || timestamp < 0) {
-			throw new Error('Timestamp has to be positive integer');
-		}
+		Validator.checkTimestamp(timestamp);
 
 		return this.addParams(keywords.TIMESTAMP, timestamp);
 	}
 
 
 	uncompressed(uncompressed = false) {
-		if (typeof variable !== "boolean") {
+		if (Validator.isUndefined(uncompressed)) {
+			return this;
+		}
+
+		if (!Validator.isBoolean(uncompressed)) {
 			throw new Error('Parameter uncompressed is boolean flag');
 		}
 
-		if (uncompressed) {
+		if(uncompressed) {
 			return this.addParams(keywords.UNCOMPRESSED);
 		}
 
@@ -87,11 +94,15 @@ class Query {
 
 
 	withlabels(withlabels = false) {
-		if (typeof variable !== "boolean") {
+		if (Validator.isUndefined(withlabels)) {
+			return this;
+		}
+
+		if (!Validator.isBoolean(withlabels)) {
 			throw new Error('Parameter withlabels is boolean flag');
 		}
 
-		if (withlabels) {
+		if(withlabels) {
 			return this.addParams(keywords.WITHLABELS);
 		}
 
@@ -111,13 +122,13 @@ class Query {
 	}
 
 
-	toString() {
-		return [this.command, ...this.params].join(SIGN_SPACE);
+	build() {
+		return [this.command, ...this.params];
 	}
 
 
 	static create(command) {
-		if (!commands[command]) {
+		if (commandsArray.includes(command)) {
 			throw new Error('Unknown command');
 		}
 		
