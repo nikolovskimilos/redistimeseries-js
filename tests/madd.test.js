@@ -1,7 +1,7 @@
 
 const RedisMock = require('./__mocks__/redis');
 
-const { commands, keywords } = require('../src/constants');
+const { commands } = require('../src/constants');
 const RedisTimeSeries = require('../src/RedisTimeSeries');
 
 const { TS_MADD } = commands;
@@ -24,9 +24,9 @@ const TEST_PARAMS = {
 let rts = null;
 
 const validateQuery = (query) => {
-  const [commands, params] = RedisMock.send_command.mock.calls[0];
-  expect([commands, ...params].join(SIGN_SPACE)).toBe(query);
-}
+  const [command, params] = RedisMock.send_command.mock.calls[0];
+  expect([command, ...params].join(SIGN_SPACE)).toBe(query);
+};
 
 describe('madd method tests', () => {
   beforeEach(() => {

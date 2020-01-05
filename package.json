@@ -19,6 +19,9 @@
     "javascript",
     "nodejs"
   ],
+  "files": [
+    "src/"
+  ],
   "main": "index.js",
   "scripts": {
     "lint": "eslint --color ./src ./tests",
@@ -43,7 +46,9 @@
       "node": true,
       "jest": true
     },
-    "plugins": ["import"],
+    "plugins": [
+      "import"
+    ],
     "parserOptions": {
       "ecmaVersion": 8
     },
@@ -53,10 +58,10 @@
         "never"
       ],
       "max-len": [
-        "error", 
-        { 
+        "error",
+        {
           "code": 125,
-          "ignoreComments": true 
+          "ignoreComments": true
         }
       ],
       "no-debugger": 1,

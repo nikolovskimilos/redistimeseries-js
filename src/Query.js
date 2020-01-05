@@ -44,6 +44,10 @@ class Query {
       throw new Error('Unknown aggregation type');
     }
 
+    if (!Validator.isPositiveInteger(timeBucket)) {
+      throw new Error('timeBucket should be a positive integer value');
+    }
+
     return this.addParams(keywords.AGGREGATION, type, timeBucket);
   }
 
