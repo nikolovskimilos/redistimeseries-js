@@ -18,6 +18,11 @@ const TEST_PARAMS = {
 
 let rts = null;
 
+const validateQuery = (query) => {
+  const [commands, params] = RedisMock.send_command.mock.calls[0];
+  expect([commands, ...params].join(SIGN_SPACE)).toBe(query);
+}
+
 
 describe('get method tests', () => {
   beforeEach(() => {
@@ -32,9 +37,7 @@ describe('get method tests', () => {
     const query = `${TS_GET} ${key}`;
 
     await rts.get(key);
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query);
   });
 
   it('should throw an error, no arguments', async () => {

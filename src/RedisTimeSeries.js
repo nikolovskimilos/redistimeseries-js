@@ -14,19 +14,33 @@ class RedisTimeSeries {
     this.client = null;
   }
 
-
   /**
    * Connect client to redis server
    */
-  connect() {
-    this.client = Redis.createClient(this.options);
+  async connect() {
+    this.client = await Redis.createClient(this.options);
+  }
+
+  /**
+   * Fetch redis client
+   */
+  getClient() {
+    return this.client;
+  }
+
+  /**
+   * Set redis client
+   */
+  setClient(client = null) {
+    this.client = client;
   }
 
   /**
    * Send plain command to redis
    */
   async send(...params) {
-    return this.client.send_command(...params);
+    const [command, ...args] = params;
+    return this.client.send_command(command, args);
   }
 
 
@@ -89,6 +103,8 @@ class RedisTimeSeries {
    * TS.MADD key timestamp value [key timestamp value ...]
    */
   async madd(...arrayOfObjects) {
+    Validator.checkParams(arrayOfObjects);
+
     const params = [];
 
     arrayOfObjects.reduce((acc, { key, timestamp, value }) => {
@@ -103,7 +119,7 @@ class RedisTimeSeries {
     }, params);
 
     const query = Query
-      .create(commands.TS_ADD)
+      .create(commands.TS_MADD)
       .addParams(...params)
       .build();
 
@@ -161,7 +177,7 @@ class RedisTimeSeries {
     const query = Query
       .create(commands.TS_CREATERULE)
       .addParams(sourceKey, destKey)
-      .aggregation(aggregationType, timeBucket)
+      .aggregation(aggregation)
       .build();
 
     return this.send(...query);
@@ -171,7 +187,7 @@ class RedisTimeSeries {
   /**
    * TS.DELETERULE sourceKey destKey
    */
-  async deleteRule(sourceKey, destKey, aggregation = {}) {
+  async deleteRule(sourceKey, destKey) {
     Validator.checkKey(sourceKey, 'sourceKey');
     Validator.checkKey(destKey, 'destKey');
 

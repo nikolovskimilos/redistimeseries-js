@@ -16,7 +16,8 @@
     "redis",
     "redis-client",
     "timeseries",
-    "javascript"
+    "javascript",
+    "nodejs"
   ],
   "main": "index.js",
   "scripts": {

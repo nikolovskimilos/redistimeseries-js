@@ -2,8 +2,8 @@
 const Validator = require('./Validator');
 const { commands, keywords, aggregationTypes } = require('./constants');
 
-const commandsArray = Object.keys(commands);
-
+const commandsArray = Object.values(commands);
+const aggregationTypesArray = Object.values(aggregationTypes);
 
 class Query {
   constructor(command) {
@@ -39,12 +39,12 @@ class Query {
     return this;
   }
 
-  aggregation({ aggregationType, timeBucket } = {}) {
-    if (!aggregationTypes[aggregationType]) {
+  aggregation({ type, timeBucket } = {}) {
+    if (!aggregationTypesArray.includes(type)) {
       throw new Error('Unknown aggregation type');
     }
 
-    return this.addParams(keywords.AGGREGATION, aggregationType, timeBucket);
+    return this.addParams(keywords.AGGREGATION, type, timeBucket);
   }
 
   count(count) {
@@ -108,7 +108,7 @@ class Query {
   }
 
   static create(command) {
-    if (commandsArray.includes(command)) {
+    if (!commandsArray.includes(command)) {
       throw new Error('Unknown command');
     }
 

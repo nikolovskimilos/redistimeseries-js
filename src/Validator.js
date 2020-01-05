@@ -28,6 +28,12 @@ class Validator {
     }
   }
 
+  static checkParams(params) {
+    if (params.length === 0) {
+      throw new Error('At least one parameter is required');
+    }
+  }
+
   static isString(value) {
     return typeof value === 'string';
   }

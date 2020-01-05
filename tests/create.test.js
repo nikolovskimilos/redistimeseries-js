@@ -25,6 +25,11 @@ const TEST_PARAMS = {
 
 let rts = null;
 
+const validateQuery = (query) => {
+  const [commands, params] = RedisMock.send_command.mock.calls[0];
+  expect([commands, ...params].join(SIGN_SPACE)).toBe(query);
+}
+
 
 describe('create method tests', () => {
   beforeEach(() => {
@@ -40,9 +45,7 @@ describe('create method tests', () => {
     const query = `${TS_CREATE} ${TEST_PARAMS.key}`;
 
     await rts.create(key);
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query);
   });
 
   it('should create time series with retention', async () => {
@@ -50,9 +53,7 @@ describe('create method tests', () => {
     const query = `${TS_CREATE} ${key} ${RETENTION} ${retention}`;
 
     await rts.create(key, { retention });
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query);
   });
 
   it('should create time series with labels', async () => {
@@ -60,9 +61,7 @@ describe('create method tests', () => {
     const query = `${TS_CREATE} ${key} ${keywords.LABELS} room ${labels.room} section ${labels.section}`;
 
     await rts.create(key, { labels });
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query);
   });
 
   it('should create time series with uncompressed flag', async () => {
@@ -71,9 +70,7 @@ describe('create method tests', () => {
     const query = `${TS_CREATE} ${key} ${UNCOMPRESSED}`;
 
     await rts.create(key, { uncompressed });
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query);
   });
 
   it('should create time series with retention and labels', async () => {
@@ -83,9 +80,7 @@ describe('create method tests', () => {
     const query = `${TS_CREATE} ${key} ${RETENTION} ${retention} ${labelsQuery}`;
 
     await rts.create(key, { retention, labels });
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query);
   });
 
   it('should create time series with retention, labels and uncompressed flag', async () => {
@@ -95,9 +90,7 @@ describe('create method tests', () => {
     const query = `${TS_CREATE} ${key} ${RETENTION} ${retention} ${labelsQuery} ${UNCOMPRESSED}`;
 
     await rts.create(key, { retention, labels, uncompressed });
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query);
   });
 
   it('should throw an error, key is missing', async () => {

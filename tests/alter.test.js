@@ -23,6 +23,11 @@ const TEST_PARAMS = {
 
 let rts = null;
 
+const validateQuery = (query) => {
+  const [commands, params] = RedisMock.send_command.mock.calls[0];
+  expect([commands, ...params].join(SIGN_SPACE)).toBe(query);
+}
+
 
 describe('alter method tests', () => {
   beforeEach(() => {
@@ -37,9 +42,7 @@ describe('alter method tests', () => {
     const query = `${TS_ALTER} ${TEST_PARAMS.key}`;
 
     await rts.alter(key);
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query);
   });
 
   it('should alter time series with retention', async () => {
@@ -47,9 +50,7 @@ describe('alter method tests', () => {
     const query = `${TS_ALTER} ${key} ${RETENTION} ${retention}`;
 
     await rts.alter(key, { retention });
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query);
   });
 
   it('should alter time series with labels', async () => {
@@ -57,9 +58,7 @@ describe('alter method tests', () => {
     const query = `${TS_ALTER} ${key} ${keywords.LABELS} room ${labels.room} section ${labels.section}`;
 
     await rts.alter(key, { labels });
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query);
   });
 
   it('should alter time series with retention and labels', async () => {
@@ -69,9 +68,7 @@ describe('alter method tests', () => {
     const query = `${TS_ALTER} ${key} ${RETENTION} ${retention} ${labelsQuery}`;
 
     await rts.alter(key, { retention, labels });
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query);
   });
 
   it('should throw an error, key is missing', async () => {

@@ -25,6 +25,11 @@ const TEST_PARAMS = {
 
 let rts = null;
 
+const validateQuery = (query) => {
+  const [commands, params] = RedisMock.send_command.mock.calls[0];
+  expect([commands, ...params].join(SIGN_SPACE)).toBe(query);
+}
+
 
 describe('decrBy method tests', () => {
   beforeEach(() => {
@@ -39,9 +44,7 @@ describe('decrBy method tests', () => {
     const query = `${TS_DECRBY} ${key} ${value}`;
 
     await rts.decrBy(key, value);
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query)
   });
 
   it('should decrement the latest value of time series with timestamp', async () => {
@@ -49,9 +52,7 @@ describe('decrBy method tests', () => {
     const query = `${TS_DECRBY} ${key} ${value} ${TIMESTAMP} ${timestamp}`;
 
     await rts.decrBy(key, value, { timestamp });
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query)
   });
 
   it('should decrement the latest value of time series with retention', async () => {
@@ -59,9 +60,7 @@ describe('decrBy method tests', () => {
     const query = `${TS_DECRBY} ${key} ${value} ${RETENTION} ${retention}`;
 
     await rts.decrBy(key, value, { retention });
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query)
   });
 
   it('should decrement the latest value of time series with labels', async () => {
@@ -69,9 +68,7 @@ describe('decrBy method tests', () => {
     const query = `${TS_DECRBY} ${key} ${value} ${LABELS} room ${labels.room} section ${labels.section}`;
 
     await rts.decrBy(key, value, { labels });
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query)
   });
 
   it('should throw an error, no arguments', async () => {

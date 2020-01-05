@@ -27,6 +27,10 @@ const TEST_PARAMS = {
 
 let rts = null;
 
+const validateQuery = (query) => {
+  const [commands, params] = RedisMock.send_command.mock.calls[0];
+  expect([commands, ...params].join(SIGN_SPACE)).toBe(query);
+}
 
 describe('add method tests', () => {
   beforeEach(() => {
@@ -41,9 +45,7 @@ describe('add method tests', () => {
     const query = `${TS_ADD} ${key} ${timestamp} ${value}`;
 
     await rts.add(key, timestamp, value);
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query);
   });
 
   it('should add a value time series with retention', async () => {
@@ -51,9 +53,7 @@ describe('add method tests', () => {
     const query = `${TS_ADD} ${key} ${timestamp} ${value} ${RETENTION} ${retention}`;
 
     await rts.add(key, timestamp, value, { retention });
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query);
   });
 
   it('should add a value time series with labels', async () => {
@@ -63,9 +63,7 @@ describe('add method tests', () => {
     const query = `${TS_ADD} ${key} ${timestamp} ${value} ${labelsQuery}`;
 
     await rts.add(key, timestamp, value, { labels });
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query);
   });
 
   it('should add a value time series with retention and labels', async () => {
@@ -75,9 +73,7 @@ describe('add method tests', () => {
     const query = `${TS_ADD} ${key} ${timestamp} ${value} ${RETENTION} ${retention} ${labelsQuery}`;
 
     await rts.add(key, timestamp, value, { retention, labels });
-
-    const redisCommandParams = RedisMock.send_command.mock.calls[0];
-    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    validateQuery(query);
   });
 
   it('should throw an error, no arguments', async () => {
