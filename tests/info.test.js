@@ -9,18 +9,18 @@ const SIGN_SPACE = ' ';
 
 
 const TEST_OPTIONS = {
-	host: 'localhost',
-	port: 6379
+  host: 'localhost',
+  port: 6379
 };
 const TEST_PARAMS = {
-	key: 'sometestkey'
+  key: 'sometestkey'
 };
 
 let rts = null;
 
 
 describe('info method tests', () => {
-	beforeEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
     
     rts = new RedisTimeSeries(TEST_OPTIONS);
@@ -28,16 +28,16 @@ describe('info method tests', () => {
   });
 
   it('should fetch time series info and statistics', async () => {
-  	const { key } = TEST_PARAMS;
-  	const query = `${TS_INFO} ${key}`;
+    const { key } = TEST_PARAMS;
+    const query = `${TS_INFO} ${key}`;
 
-		await rts.info(key);
+    await rts.info(key);
 
-		const redisCommandParams = RedisMock.send_command.mock.calls[0];
-		expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
+    const redisCommandParams = RedisMock.send_command.mock.calls[0];
+    expect(redisCommandParams.join(SIGN_SPACE)).toBe(query);
   });
 
   it('should throw an error, no arguments', async () => {
-		await expect(rts.info()).rejects.toThrow();
+    await expect(rts.info()).rejects.toThrow();
   });
 });

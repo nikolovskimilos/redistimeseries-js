@@ -6,126 +6,114 @@ const commandsArray = Object.keys(commands);
 
 
 class Query {
-	constructor(command) {
-		this.command = command;
-		this.params = [];
-	}
+  constructor(command) {
+    this.command = command;
+    this.params = [];
+  }
 
+  addParams(...params) {
+    this.params = this.params.concat(params);
+    return this;
+  }
 
-	addParams(...params) {
-		this.params = this.params.concat(params);
-		return this;
-	}
+  retention(retention) {
+    if (Validator.isUndefined(retention)) {
+      return this;
+    }
 
+    if (Validator.isPositiveInteger(retention)) {
+      return this.addParams(keywords.RETENTION, retention);
+    }
 
-	retention(retention) {
-		if (Validator.isUndefined(retention)) {
-			return this;
-		}
+    throw new Error('Retention has to be positive integer');
+  }
 
-		if (Validator.isPositiveInteger(retention)) {
-			return this.addParams(keywords.RETENTION, retention);
-		}
+  labels(labelValues = {}) {
+    const labels = Object.keys(labelValues);
 
-		throw new Error('Retention has to be positive integer');
-	}
+    if (labels.length > 0) {
+      this.addParams(keywords.LABELS);
+      labels.forEach((labelName) => this.addParams(labelName, labelValues[labelName]));
+    }
 
+    return this;
+  }
 
-	labels(labelValues = {}) {
-		const labels = Object.keys(labelValues);
+  aggregation({ aggregationType, timeBucket } = {}) {
+    if (!aggregationTypes[aggregationType]) {
+      throw new Error('Unknown aggregation type');
+    }
 
-		if (labels.length > 0) {
-			this.addParams(keywords.LABELS);
-			labels.forEach((labelName) => this.addParams(labelName, labelValues[labelName]));
-		}
+    return this.addParams(keywords.AGGREGATION, aggregationType, timeBucket);
+  }
 
-		return this;
-	}
+  count(count) {
+    if (Validator.isUndefined(count)) {
+      return this;
+    }
 
+    if (Validator.isPositiveInteger(count)) {
+      return this.addParams(keywords.COUNT, count);
+    }
 
-	aggregation({ aggregationType, timeBucket } = {}) {
-		if (!aggregationTypes[aggregationType]) {
-			throw new Error('Unknown aggregation type');
-		}
+    throw new Error('Count has to be positive integer');
+  }
 
-		return this.addParams(keywords.AGGREGATION, aggregationType, timeBucket);
-	}
+  timestamp(timestamp) {
+    if (Validator.isUndefined(timestamp)) {
+      return this;
+    }
 
+    Validator.checkTimestamp(timestamp);
 
-	count(count) {
-		if (Validator.isUndefined(count)) {
-			return this;
-		}
+    return this.addParams(keywords.TIMESTAMP, timestamp);
+  }
 
-		if (Validator.isPositiveInteger(count)) {
-			return this.addParams(keywords.COUNT, count);
-		}
+  uncompressed(uncompressed = false) {
+    if (!Validator.isBoolean(uncompressed)) {
+      throw new Error('Parameter uncompressed is boolean flag');
+    }
 
-		throw new Error('Count has to be positive integer');
-	}
+    if (uncompressed) {
+      return this.addParams(keywords.UNCOMPRESSED);
+    }
 
+    return this;
+  }
 
-	timestamp(timestamp) {
-		if (Validator.isUndefined(timestamp)) {
-			return this;
-		}
+  withlabels(withlabels = false) {
+    if (!Validator.isBoolean(withlabels)) {
+      throw new Error('Parameter withlabels is boolean flag');
+    }
 
-		Validator.checkTimestamp(timestamp);
+    if (withlabels) {
+      return this.addParams(keywords.WITHLABELS);
+    }
 
-		return this.addParams(keywords.TIMESTAMP, timestamp);
-	}
+    return this;
+  }
 
+  pureFilter(filter) {
 
-	uncompressed(uncompressed = false) {
-		if (!Validator.isBoolean(uncompressed)) {
-			throw new Error('Parameter uncompressed is boolean flag');
-		}
+  }
 
-		if(uncompressed) {
-			return this.addParams(keywords.UNCOMPRESSED);
-		}
+  filter(filter) {
+    return this
+      .addParams(keywords.FILTER)
+      .pureFilter(filter);
+  }
 
-		return this;
-	}
+  build() {
+    return [this.command, ...this.params];
+  }
 
+  static create(command) {
+    if (commandsArray.includes(command)) {
+      throw new Error('Unknown command');
+    }
 
-	withlabels(withlabels = false) {
-		if (!Validator.isBoolean(withlabels)) {
-			throw new Error('Parameter withlabels is boolean flag');
-		}
-
-		if(withlabels) {
-			return this.addParams(keywords.WITHLABELS);
-		}
-
-		return this;
-	}
-
-
-	pureFilter(filter) {
-
-	}
-
-
-	filter(filter) {
-		return this
-			.addParams(keywords.FILTER)
-			.pureFilter(filter);
-	}
-
-
-	build() {
-		return [this.command, ...this.params];
-	}
-
-
-	static create(command) {
-		if (commandsArray.includes(command)) {
-			throw new Error('Unknown command');
-		}
-		
-		return new Query(command);
-	}
+    return new Query(command);
+  }
 }
 
 module.exports = Query;
