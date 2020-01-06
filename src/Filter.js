@@ -8,7 +8,7 @@ class Filter {
     return this.filterString;
   }
 
-  static equals(label, value) {
+  static equal(label, value) {
     if (!label || !value) {
       throw new Error('equals filter requires label and value');
     }
@@ -16,7 +16,7 @@ class Filter {
     return new Filter(`${label}=${value}`);
   }
 
-  static notEquals(label, value) {
+  static notEqual(label, value) {
     if (!label || !value) {
       throw new Error('notEquals filter requires label and value');
     }
@@ -34,14 +34,14 @@ class Filter {
 
   static notExists(label) {
     if (!label) {
-      throw new Error('exists filter requires label');
+      throw new Error('notExists filter requires label');
     }
 
     return new Filter(`${label}!=`);
   }
 
   static in(label, arrayOfValues = []) {
-    if (!label || !arrayOfValues) {
+    if (!label || !arrayOfValues || !Array.isArray(arrayOfValues) || arrayOfValues.length === 0) {
       throw new Error('in filter requires label and arrayOfValues(must be an array)');
     }
 
@@ -49,7 +49,7 @@ class Filter {
   }
 
   static notIn(label, arrayOfValues = []) {
-    if (!label || !arrayOfValues) {
+    if (!label || !arrayOfValues || !Array.isArray(arrayOfValues) || arrayOfValues.length === 0) {
       throw new Error('notIn filter requires label and arrayOfValues(must be an array)');
     }
 

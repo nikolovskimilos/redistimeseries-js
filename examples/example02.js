@@ -3,9 +3,9 @@ const { RedisTimeSeries, Aggregation } = require('../index');
 const rtsClient = new RedisTimeSeries();
 
 const key = 'temperature';
-const avgTemp = 'temperature:avg';
-const maxTemp = 'temperature:max';
-const minTemp = 'temperature:min';
+const keyAvgTemp = 'temperature:avg';
+const keyMaxTemp = 'temperature:max';
+const keyMinTemp = 'temperature:min';
 
 
 const updateTemperature = async () => {
@@ -16,12 +16,22 @@ const updateTemperature = async () => {
   await rtsClient.add(key, timestamp, value, { labels: { section } });
 }
 
+const readTemperature = async () => {
+  const avg = await rtsClient.get(keyAvgTemp);
+  const max = await rtsClient.get(keyMaxTemp);
+  const min = await rtsClient.get(keyMinTemp);
+
+  console.log('average', avg);
+  console.log('maximum', max);
+  console.log('minimum', min);
+}
+
 const start = async () => {
   await rtsClient.connect();
   await rtsClient.create(key);
-  await rtsClient.create(avgTemp);
-  await rtsClient.create(maxTemp);
-  await rtsClient.create(minTemp);
+  await rtsClient.create(keyAvgTemp);
+  await rtsClient.create(keyMaxTemp);
+  await rtsClient.create(keyMinTemp);
 
   const avgAggregationRule = {
     type: Aggregation.AVG, // average
@@ -38,10 +48,15 @@ const start = async () => {
     timeBucket: 60000      // 60 seconds
   }
 
-  await rtsClient.createRule(key, avgTemp, avgAggregationRule);
-  await rtsClient.createRule(key, maxTemp, maxAggregationRule);
-  await rtsClient.createRule(key, minTemp, minAggregationRule);
+  await rtsClient.createRule(key, keyAvgTemp, avgAggregationRule);
+  await rtsClient.createRule(key, keyMaxTemp, maxAggregationRule);
+  await rtsClient.createRule(key, keyMinTemp, minAggregationRule);
+  
+  // update temperature every second
   setInterval(updateTemperature, 1000);
+
+  // read temperature avg, max and min values every 5 seconds
+  setInterval(readTemperature, 5000);
 }
 
 start();

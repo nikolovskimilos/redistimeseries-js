@@ -1,7 +1,10 @@
 
+const Client = {
+  send_command: jest.fn((command, args, callback) => callback())
+};
+
 const RedisMock = {
-  createClient: jest.fn(() => RedisMock),
-  send_command: jest.fn()
+  createClient: jest.fn(() => Client)
 };
 
 module.exports = RedisMock;

@@ -1,8 +1,6 @@
 
-const RedisMock = require('./__mocks__/redis');
-
-const { commands, keywords } = require('../src/constants');
-const { RedisTimeSeries, Aggregation } = require('../index');
+const { commands, keywords } = require('../../src/constants');
+const { RedisTimeSeries, Aggregation } = require('../../index');
 
 const { AGGREGATION } = keywords;
 const { TS_CREATERULE } = commands;
@@ -24,7 +22,7 @@ const TEST_PARAMS = {
 let rts = null;
 
 const validateQuery = (query) => {
-  const [command, params] = RedisMock.send_command.mock.calls[0];
+  const [command, params] = rts.client.send_command.mock.calls[0];
   expect([command, ...params].join(SIGN_SPACE)).toBe(query);
 };
 
@@ -61,5 +59,11 @@ describe('createRule method tests', () => {
   it('should throw an error, aggregation is missing', async () => {
     const { srcKey, dstKey } = TEST_PARAMS;
     await expect(rts.createRule(srcKey, dstKey)).rejects.toThrow();
+  });
+
+  it('should throw an error, timeBucket is invalid', async () => {
+    const { srcKey, dstKey, aggregation } = TEST_PARAMS;
+    const { type } = aggregation;
+    await expect(rts.createRule(srcKey, dstKey, { type, timeBucket: {} })).rejects.toThrow();
   });
 });

@@ -1,9 +1,8 @@
 
 const Validator = require('./Validator');
-const { commands, keywords, aggregationTypes } = require('./constants');
+const { commands, keywords } = require('./constants');
 
 const commandsArray = Object.values(commands);
-const aggregationTypesArray = Object.values(aggregationTypes);
 
 class Query {
   constructor(command) {
@@ -17,15 +16,11 @@ class Query {
   }
 
   retention(retention) {
-    if (Validator.isUndefined(retention)) {
-      return this;
-    }
+    this._validateAndDo(retention, Validator.checkRetention, () => {
+      this.addParams(keywords.RETENTION, retention);
+    });
 
-    if (Validator.isPositiveInteger(retention)) {
-      return this.addParams(keywords.RETENTION, retention);
-    }
-
-    throw new Error('Retention has to be positive integer');
+    return this;
   }
 
   labels(labelValues = {}) {
@@ -39,66 +34,53 @@ class Query {
     return this;
   }
 
-  aggregation({ type, timeBucket } = {}) {
-    if (!aggregationTypesArray.includes(type)) {
-      throw new Error('Unknown aggregation type');
-    }
-
-    if (!Validator.isPositiveInteger(timeBucket)) {
-      throw new Error('timeBucket should be a positive integer value');
-    }
-
-    return this.addParams(keywords.AGGREGATION, type, timeBucket);
-  }
-
-  count(count) {
-    if (Validator.isUndefined(count)) {
-      return this;
-    }
-
-    if (Validator.isPositiveInteger(count)) {
-      return this.addParams(keywords.COUNT, count);
-    }
-
-    throw new Error('Count has to be positive integer');
-  }
-
-  timestamp(timestamp) {
-    if (Validator.isUndefined(timestamp)) {
-      return this;
-    }
-
-    Validator.checkTimestamp(timestamp);
-
-    return this.addParams(keywords.TIMESTAMP, timestamp);
-  }
-
-  uncompressed(uncompressed = false) {
-    if (!Validator.isBoolean(uncompressed)) {
-      throw new Error('Parameter uncompressed is boolean flag');
-    }
-
-    if (uncompressed) {
-      return this.addParams(keywords.UNCOMPRESSED);
-    }
+  aggregation(aggregation) {
+    this._validateAndDo(aggregation, Validator.checkAggregation, () => {
+      const { type, timeBucket } = aggregation;
+      this.addParams(keywords.AGGREGATION, type, timeBucket);
+    });
 
     return this;
   }
 
-  withlabels(withlabels = false) {
-    if (!Validator.isBoolean(withlabels)) {
-      throw new Error('Parameter withlabels is boolean flag');
-    }
+  count(count) {
+    this._validateAndDo(count, Validator.checkCount, () => {
+      this.addParams(keywords.COUNT, count);
+    });
 
-    if (withlabels) {
-      return this.addParams(keywords.WITHLABELS);
-    }
+    return this;
+  }
+
+  timestamp(timestamp) {
+    this._validateAndDo(timestamp, Validator.checkTimestamp, () => {
+      this.addParams(keywords.TIMESTAMP, timestamp);
+    });
+
+    return this;
+  }
+
+  uncompressed(uncompressed) {
+    this._validateAndDo(uncompressed, Validator.checkUncompressedFlag, () => {
+      this.addParams(...(uncompressed ? [keywords.UNCOMPRESSED] : []));
+    });
+
+    return this;
+  }
+
+  withLabels(withLabels = false) {
+    this._validateAndDo(withLabels, Validator.checkWithLabelsFlag, () => {
+      this.addParams(...(withLabels ? [keywords.WITHLABELS] : []));
+    });
 
     return this;
   }
 
   pureFilter(filter) {
-
+    this._validateAndDo(filter, Validator.checkFilter, () => {
+      const filterArray = filter.map((condition) => condition.toString());
+      this.addParams(...filterArray);
+    });
+    return this;
   }
 
   filter(filter) {
@@ -109,6 +91,13 @@ class Query {
 
   build() {
     return [this.command, ...this.params];
+  }
+
+  _validateAndDo(value, validator, callback) {
+    if (!Validator.isUndefined(value)) {
+      validator(value);
+      callback();
+    }
   }
 
   static create(command) {

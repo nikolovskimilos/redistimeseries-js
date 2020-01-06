@@ -32,6 +32,10 @@ class RedisTimeSeries {
    * Set redis client
    */
   setClient(client = null) {
+    if (!client) {
+      throw new Error('Client must be a valid object');
+    }
+
     this.client = client;
   }
 
@@ -40,7 +44,15 @@ class RedisTimeSeries {
    */
   async send(...params) {
     const [command, ...args] = params;
-    return this.client.send_command(command, args);
+    return new Promise((resolve, reject) => {
+      this.client.send_command(command, args, (error, result) => {
+        if (error) {
+          return reject(error);
+        }
+
+        return resolve(result);
+      });
+    });
   }
 
 
@@ -204,7 +216,7 @@ class RedisTimeSeries {
    * TS.RANGE key fromTimestamp toTimestamp [COUNT count] [AGGREGATION aggregationType timeBucket]
    */
 
-  async range(key, fromTimestamp, toTimestamp, { count, aggregation = {} } = {}) {
+  async range(key, fromTimestamp, toTimestamp, { count, aggregation } = {}) {
     Validator.checkKey(key);
     Validator.checkTimestampRange(fromTimestamp, toTimestamp);
 
@@ -222,15 +234,16 @@ class RedisTimeSeries {
   /**
    * TS.MRANGE fromTimestamp toTimestamp [COUNT count] [AGGREGATION aggregationType timeBucket] [WITHLABELS] FILTER filter..
    */
-  async mrange(fromTimestamp, toTimestamp, filter, { count, aggregation, withlabels } = {}) {
+  async mrange(fromTimestamp, toTimestamp, filter = [], { count, aggregation, withLabels } = {}) {
     Validator.checkTimestampRange(fromTimestamp, toTimestamp);
+    Validator.checkFilter(filter);
 
     const query = Query
       .create(commands.TS_MRANGE)
       .addParams(fromTimestamp, toTimestamp)
       .count(count)
       .aggregation(aggregation)
-      .withlabels(withlabels)
+      .withLabels(withLabels)
       .filter(filter)
       .build();
 
@@ -256,7 +269,9 @@ class RedisTimeSeries {
   /**
    * TS.MGET FILTER filter...
    */
-  async mget(filter = []) {
+  async mget(...filter) {
+    Validator.checkFilter(filter);
+
     const query = Query
       .create(commands.TS_MGET)
       .filter(filter)
@@ -284,7 +299,9 @@ class RedisTimeSeries {
   /**
    * TS.QUERYINDEX filter...
    */
-  async queryIndex(filter = []) {
+  async queryIndex(...filter) {
+    Validator.checkFilter(filter);
+
     const query = Query
       .create(commands.TS_QUERYINDEX)
       .pureFilter(filter)

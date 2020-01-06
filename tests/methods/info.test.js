@@ -1,10 +1,8 @@
 
-const RedisMock = require('./__mocks__/redis');
+const { commands } = require('../../src/constants');
+const { RedisTimeSeries } = require('../../index');
 
-const { commands } = require('../src/constants');
-const RedisTimeSeries = require('../src/RedisTimeSeries');
-
-const { TS_GET } = commands;
+const { TS_INFO } = commands;
 const SIGN_SPACE = ' ';
 
 
@@ -19,12 +17,12 @@ const TEST_PARAMS = {
 let rts = null;
 
 const validateQuery = (query) => {
-  const [command, params] = RedisMock.send_command.mock.calls[0];
+  const [command, params] = rts.client.send_command.mock.calls[0];
   expect([command, ...params].join(SIGN_SPACE)).toBe(query);
 };
 
 
-describe('get method tests', () => {
+describe('info method tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -32,15 +30,15 @@ describe('get method tests', () => {
     rts.connect(TEST_OPTIONS);
   });
 
-  it('should fetch time series', async () => {
+  it('should fetch time series info and statistics', async () => {
     const { key } = TEST_PARAMS;
-    const query = `${TS_GET} ${key}`;
+    const query = `${TS_INFO} ${key}`;
 
-    await rts.get(key);
+    await rts.info(key);
     validateQuery(query);
   });
 
   it('should throw an error, no arguments', async () => {
-    await expect(rts.get()).rejects.toThrow();
+    await expect(rts.info()).rejects.toThrow();
   });
 });

@@ -1,8 +1,6 @@
 
-const RedisMock = require('./__mocks__/redis');
-
-const { commands, keywords } = require('../src/constants');
-const { RedisTimeSeries } = require('../index');
+const { commands, keywords } = require('../../src/constants');
+const { RedisTimeSeries } = require('../../index');
 
 const { RETENTION, LABELS } = keywords;
 const { TS_ADD } = commands;
@@ -28,7 +26,7 @@ const TEST_PARAMS = {
 let rts = null;
 
 const validateQuery = (query) => {
-  const [command, params] = RedisMock.send_command.mock.calls[0];
+  const [command, params] = rts.client.send_command.mock.calls[0];
   expect([command, ...params].join(SIGN_SPACE)).toBe(query);
 };
 
