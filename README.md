@@ -1,3 +1,5 @@
+![Tests](https://github.com/nikolovskimilos/redistimeseries-js/workflows/Testing/badge.svg)
+
 # redistimeseries-js
 
 JavaScript client for [RedisTimeSeries](https://github.com/RedisLabsModules/redis-timeseries)
