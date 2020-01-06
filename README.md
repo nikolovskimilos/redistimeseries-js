@@ -16,8 +16,8 @@ const { RedisTimeSeries } = require('redistimeseries-js');
 // check base redis client for options
 // https://github.com/NodeRedis/node_redis
 const options = {
-	host: 'localhost',
-	port: 6379
+  host: 'localhost',
+  port: 6379
 }
 
 const rtsClient = new RedisTimeSeries();
@@ -25,13 +25,13 @@ const key = 'temperature';
 const retention = 60000;
 
 const updateTemperature = async () => {
-	await rtsClient.add(key, Date.now(), Math.floor(Math.random()*30));
+  await rtsClient.add(key, Date.now(), Math.floor(Math.random()*30));
 }
 
 const start = async () => {
-	await rtsClient.connect();
-	await rtsClient.create(key, { retention });
-	setInterval(updateTemperature, 1000);
+  await rtsClient.connect();
+  await rtsClient.create(key, { retention });
+  setInterval(updateTemperature, 1000);
 }
 
 start();
@@ -47,12 +47,12 @@ Filters are represented as array of conditions
 const { Filter } = require('redistimeseries-js');
 
 const myFilter = [
-	Filter.equal('area_id', 32),
-	Filter.notEqual('sensor_id', 1),
-	Filter.exists('sub_area_id'),
-	Filter.notExists('outdoor'),
-	Filter.in('secitons', [2, 3, 4]),
-	Filter.notIn('secitons', [5, 6])
+  Filter.equal('area_id', 32),
+  Filter.notEqual('sensor_id', 1),
+  Filter.exists('sub_area_id'),
+  Filter.notExists('outdoor'),
+  Filter.in('secitons', [2, 3, 4]),
+  Filter.notIn('secitons', [5, 6])
 ];
 
 ```
@@ -66,12 +66,12 @@ Examples for each method are shown below, notice that optional parameters are al
 // TS.CREATE temperature:2:32 RETENTION 60000 LABELS sensor_id 2 area_id 32 UNCOMPRESSED
 
 client.create('temperature:2:32', {
-	retention: 60000,
-	labels: {
-		sensor_id: 2,
-		area_id: 32
-	},
-	uncompressed: true
+  retention: 60000,
+  labels: {
+    sensor_id: 2,
+    area_id: 32
+  },
+  uncompressed: true
 });
 ```
 
@@ -80,11 +80,11 @@ client.create('temperature:2:32', {
 // TS.ALTER temperature:2:32 LABELS sensor_id 2 area_id 32 sub_area_id 15
 
 client.alter('temperature:2:32', {
-	labels: {
-		sensor_id: 2,
-		area_id: 32,
-		sub_area_id: 15
-	}
+  labels: {
+    sensor_id: 2,
+    area_id: 32,
+    sub_area_id: 15
+  }
 });
 ```
 
@@ -93,17 +93,17 @@ client.alter('temperature:2:32', {
 // TS.ADD temperature:2:32 1548149180000 26 LABELS sensor_id 2 area_id 32
 
 client.add('temperature:2:32', 1548149180000, 26, {
-	labels: {
-		sensor_id: 2,
-		area_id: 32
-	}
+  labels: {
+    sensor_id: 2,
+    area_id: 32
+  }
 });
 ```
 ```javascript
 // TS.ADD temperature:3:11 1548149183000 27 RETENTION 3600
 
 client.add('temperature:2:32', 1548149180000, 26, {
-	retention: 3600
+  retention: 3600
 });
 ```
 
@@ -112,8 +112,8 @@ client.add('temperature:2:32', 1548149180000, 26, {
 // TS.MADD temperature:2:32 1548149180000 26 cpu:2:32 1548149183000 54
 
 client.madd(
-	{ key: 'temperature:2:32', timestamp: 1548149180000, value: 26 }
-	{ key: 'cpu:2:32', timestamp: 1548149183000, value: 54 }
+  { key: 'temperature:2:32', timestamp: 1548149180000, value: 26 }
+  { key: 'cpu:2:32', timestamp: 1548149183000, value: 54 }
 );
 ```
 
@@ -122,7 +122,7 @@ client.madd(
 // TS.INCRBY temperature:2:32 3 RETENTION 30000
 
 client.incrBy('temperature:2:32', 3, {
-	retention: 30000
+  retention: 30000
 });
 ```
 
@@ -131,8 +131,8 @@ client.incrBy('temperature:2:32', 3, {
 // TS.DECRBY temperature:2:32 5 RETENTION 30000 UNCOMPRESSED
 
 client.decrBy('temperature:2:32', 5, {
-	retention: 30000,
-	uncompressed: 5
+  retention: 30000,
+  uncompressed: 5
 });
 ```
 
@@ -165,7 +165,7 @@ const { RedisTimeSeries, Aggregation } = require('redistimeseries-js');
 
 const aggregation = { type: Aggregation.AVG, timeBucket: 5000 };
 client.range('temperature:2:32', 1548149180000, 1548149210000, {
-	aggregation
+  aggregation
 });
 ```
 
@@ -179,12 +179,12 @@ const { RedisTimeSeries, Aggregation, Filter } = require('redistimeseries-js');
 
 const aggregation = { type: Aggregation.AVG, timeBucket: 5000 };
 const filter = [
-	Filter.equal('area_id', 32),
-	Filter.notEqual('sensor_id', 1)
+  Filter.equal('area_id', 32),
+  Filter.notEqual('sensor_id', 1)
 ];
 
 client.mrange('temperature:2:32', 1548149180000, 1548149210000, filter, {
-	aggregation
+  aggregation
 });
 ```
 
@@ -197,13 +197,13 @@ const { RedisTimeSeries, Aggregation, Filter } = require('redistimeseries-js');
 
 const aggregation = { type: Aggregation.AVG, timeBucket: 5000 };
 const filter = [
-	Filter.equal('area_id', 32),
-	Filter.notEqual('sensor_id', 1)
+  Filter.equal('area_id', 32),
+  Filter.notEqual('sensor_id', 1)
 ];
 
 client.mrange('temperature:2:32', 1548149180000, 1548149210000, filter, {
-	aggregation,
-	withLabels: true
+  aggregation,
+  withLabels: true
 });
 ```
 
@@ -223,7 +223,7 @@ const { RedisTimeSeries, Filter } = require('redistimeseries-js');
 // ...
 
 client.mget([
-	Filter.equal('area_id', 32),
+  Filter.equal('area_id', 32),
 ]);
 ```
 
@@ -239,6 +239,6 @@ client.info('temperature:2:32');
 // TS.QUERYINDEX sensor_id=2
 
 client.queryIndex([
-	Filter.equal('sensor_id', 2)
+  Filter.equal('sensor_id', 2)
 ]);
 ```
