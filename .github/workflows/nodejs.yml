@@ -29,5 +29,5 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }} #required
         file: ./coverage-report/clover.xml
-        name: redistimeseries-js
+        name: redistimeseries-js-node-v${{ matrix.node-version }}
         fail_ci_if_error: true
