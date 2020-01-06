@@ -1,4 +1,4 @@
-![Tests](https://github.com/nikolovskimilos/redistimeseries-js/workflows/Testing/badge.svg)
+![Tests](https://github.com/nikolovskimilos/redistimeseries-js/workflows/Tests/badge.svg)
 
 # redistimeseries-js
 
