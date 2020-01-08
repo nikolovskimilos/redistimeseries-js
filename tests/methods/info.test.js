@@ -1,6 +1,6 @@
 
 const { commands } = require('../../src/constants');
-const { RedisTimeSeries } = require('../../index');
+const RedisTimeSeries = require('../../index');
 
 const { TS_INFO } = commands;
 const SIGN_SPACE = ' ';

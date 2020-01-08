@@ -1,6 +1,6 @@
 
 const { commands, keywords } = require('../../src/constants');
-const { RedisTimeSeries } = require('../../index');
+const RedisTimeSeries = require('../../index');
 
 const { TIMESTAMP, RETENTION, LABELS } = keywords;
 const { TS_INCRBY } = commands;

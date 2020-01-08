@@ -1,6 +1,7 @@
 
 const { commands } = require('../../src/constants');
-const { RedisTimeSeries, Filter } = require('../../index');
+const RedisTimeSeries = require('../../index');
+const { Filter } = RedisTimeSeries;
 
 const { TS_QUERYINDEX } = commands;
 const SIGN_SPACE = ' ';

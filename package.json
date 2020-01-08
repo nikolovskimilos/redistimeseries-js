@@ -26,9 +26,9 @@
   "scripts": {
     "lint": "eslint --color ./src ./tests",
     "lint-fix": "eslint --fix --color ./src ./tests",
-    "test": "NODE_PATH=src/ jest --env=jsdom",
-    "test-coverage": "NODE_PATH=src/ jest --env=jsdom --coverage",
-    "test-watch": "NODE_PATH=src/ jest --watchAll --env=jsdom --bail"
+    "test": "NODE_PATH=src/ jest",
+    "test-coverage": "NODE_PATH=src/ jest --coverage",
+    "test-watch": "NODE_PATH=src/ jest --watchAll --bail"
   },
   "dependencies": {
     "redis": "^2.8.0"
