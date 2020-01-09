@@ -1,6 +1,7 @@
 
 const { commands, keywords } = require('../../src/constants');
-const { RedisTimeSeries, Aggregation } = require('../../index');
+const RedisTimeSeries = require('../../index');
+const { Aggregation } = RedisTimeSeries;
 
 const { AGGREGATION } = keywords;
 const { TS_CREATERULE } = commands;

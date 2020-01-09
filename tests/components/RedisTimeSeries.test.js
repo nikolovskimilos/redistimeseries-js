@@ -1,7 +1,7 @@
 
 const RedisMock = require('../__mocks__/redis');
 
-const { RedisTimeSeries } = require('../../index');
+const RedisTimeSeries = require('../../index');
 
 const TEST_OPTIONS = {
   host: 'localhost',

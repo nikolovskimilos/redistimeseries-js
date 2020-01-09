@@ -1,4 +1,5 @@
-const { RedisTimeSeries, Aggregation } = require('../index');
+const RedisTimeSeries = require('../index');
+const { Aggregation } = RedisTimeSeries;
 
 const rtsClient = new RedisTimeSeries();
 

@@ -12,7 +12,7 @@ npm install redistimeseries-js
 #### Example
 
 ```javascript
-const { RedisTimeSeries } = require('redistimeseries-js');
+const RedisTimeSeries = require('redistimeseries-js');
 
 
 // check base redis client for options
@@ -22,7 +22,7 @@ const options = {
   port: 6379
 }
 
-const rtsClient = new RedisTimeSeries();
+const rtsClient = new RedisTimeSeries(options);
 const key = 'temperature';
 const retention = 60000;
 
@@ -58,6 +58,29 @@ const myFilter = [
 ];
 
 ```
+
+## Aggregation
+
+Possible aggregation values
+
+```javascript
+const { Aggregation } = require('redistimeseries-js');
+
+// Aggregation.AVG
+// Aggregation.SUM
+// Aggregation.MIN
+// Aggregation.MAX
+// Aggregation.RANGE
+// Aggregation.COUNT
+// Aggregation.FIRST
+// Aggregation.LAST
+// Aggregation.STDP
+// Aggregation.STDS
+// Aggregation.VARP
+// Aggregation.VARS
+
+```
+
 
 ## Methods
 
@@ -161,7 +184,7 @@ client.deleteRule('temperature:2:32', 'temperature:avg');
 ```javascript
 // TS.RANGE temperature:3:32 1548149180000 1548149210000 AGGREGATION avg 5000
 
-const { RedisTimeSeries, Aggregation } = require('redistimeseries-js');
+const { Aggregation } = require('redistimeseries-js');
 
 // ...
 
@@ -175,7 +198,7 @@ client.range('temperature:2:32', 1548149180000, 1548149210000, {
 ```javascript
 // TS.MRANGE 1548149180000 1548149210000 AGGREGATION avg 5000 FILTER area_id=32 sensor_id!=1
 
-const { RedisTimeSeries, Aggregation, Filter } = require('redistimeseries-js');
+const { Aggregation, Filter } = require('redistimeseries-js');
 
 // ...
 
@@ -193,7 +216,7 @@ client.mrange('temperature:2:32', 1548149180000, 1548149210000, filter, {
 ```javascript
 // TS.MRANGE 1548149180000 1548149210000 AGGREGATION avg 5000 WITHLABELS FILTER area_id=32 sensor_id!=1
 
-const { RedisTimeSeries, Aggregation, Filter } = require('redistimeseries-js');
+const { Aggregation, Filter } = require('redistimeseries-js');
 
 // ...
 
@@ -220,7 +243,7 @@ client.get('temperature:2:32');
 #### mget
 ```javascript
 // TS.MGET FILTER area_id=32
-const { RedisTimeSeries, Filter } = require('redistimeseries-js');
+const { Filter } = require('redistimeseries-js');
 
 // ...
 

@@ -1,6 +1,7 @@
 
 const { commands, keywords } = require('../../src/constants');
-const { RedisTimeSeries, Filter } = require('../../index');
+const RedisTimeSeries = require('../../index');
+const { Filter } = RedisTimeSeries;
 
 const { FILTER } = keywords;
 const { TS_MGET } = commands;
