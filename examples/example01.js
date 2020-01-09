@@ -1,4 +1,4 @@
-const { RedisTimeSeries } = require('../index');
+const RedisTimeSeries = require('../index');
 
 const rtsClient = new RedisTimeSeries();
 
