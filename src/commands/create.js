@@ -17,7 +17,7 @@ module.exports = QuerySchema
     'key',
     (value) => !Validator.isUndefined(value) && Validator.isString(value)
   )
-  .serialize((key) => `${TS_CREATE} ${key}`)
+  .serialize((key) => [TS_CREATE, key])
   .subquery(retention)
   .subquery(labels)
   .subquery(uncompressed);

@@ -41,5 +41,5 @@ module.exports = QuerySchema
     )
   )
   .serialize((aggregationType, timeBucket) =>
-    `${AGGREGATION} ${aggregationType} ${timeBucket}`
+    [AGGREGATION, aggregationType, timeBucket]
   );

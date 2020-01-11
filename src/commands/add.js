@@ -25,7 +25,7 @@ module.exports = QuerySchema
     'value',
     (value) => !Validator.isUndefined(value) && Validator.isFloat(value) 
   )
-  .serialize((key, timestamp, value) => `${TS_ADD} ${key} ${timestamp} ${value}`)
+  .serialize((key, timestamp, value) => [TS_ADD, key, timestamp, value])
   .subquery(retention)
   .subquery(labels)
   .subquery(uncompressed);

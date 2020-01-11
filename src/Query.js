@@ -40,16 +40,16 @@ class Query {
 
   serialize() {
     const serialize = this._schema.getSerializator();
-    let queryString = serialize(...this._params);
+    let queryArray = serialize(...this._params);
 
     this._queriesOrder.forEach((subqueryName) => {
       const subquery = this._queries[subqueryName];
       if (subquery) {
-        queryString = `${queryString} ${subquery.serialize()}`;
+        queryArray = queryArray.concat(subquery.serialize());
       }
     });
 
-    return queryString;
+    return queryArray;
   }
 
 

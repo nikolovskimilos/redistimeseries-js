@@ -17,6 +17,6 @@ module.exports = QuerySchema
     'key',
     (value) => !Validator.isUndefined(value) && Validator.isString(value)
   )
-  .serialize((key) => `${TS_ALTER} ${key}`)
+  .serialize((key) => [TS_ALTER, key])
   .subquery(retention)
   .subquery(labels);

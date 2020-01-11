@@ -12,4 +12,4 @@ module.exports = QuerySchema
     'retention',
     (value) => !Validator.isUndefined(value) && Validator.isInteger(value) && value >= 0
   )
-  .serialize(retention => `${RETENTION} ${retention}`);
+  .serialize(retention => [RETENTION, retention]);

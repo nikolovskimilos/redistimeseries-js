@@ -12,9 +12,7 @@ module.exports = QuerySchema
     'labels',
     (value) => !Validator.isUndefined(value) && Validator.isObject(value)
   )
-  .serialize((labels) => {
-  	const fields = Object.keys(labels).map((labelName) => `${labelName} ${labels[labelName]}`);
-
-		return `${LABELS} ${fields.join(' ')}`;
-  });
+  .serialize((labels) => 
+  	Object.keys(labels).reduce((acc, labelName) => acc.concat([labelName, labels[labelName]]), [LABELS])
+  );
 

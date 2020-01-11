@@ -8,4 +8,4 @@ const UNCOMPRESSED = 'UNCOMPRESSED'
  */
 module.exports = QuerySchema
 	.create(UNCOMPRESSED)
-	.serialize(() => UNCOMPRESSED);
+	.serialize(() => [UNCOMPRESSED]);
