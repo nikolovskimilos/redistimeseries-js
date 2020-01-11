@@ -11,7 +11,7 @@ const updateTemperature = async () => {
 
 const start = async () => {
 	await rtsClient.connect();
-	await rtsClient.create(key, { retention });
+	await rtsClient.create(key, { retention, uncompressed: true });
 	setInterval(updateTemperature, 1000);
 }
 

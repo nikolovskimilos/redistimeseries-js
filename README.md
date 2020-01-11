@@ -166,6 +166,7 @@ const { RedisTimeSeries, Aggregation } = require('redistimeseries-js');
 // ...
 
 const aggregation = { type: Aggregation.AVG, timeBucket: 5000 };
+
 client.range('temperature:2:32', 1548149180000, 1548149210000, {
   aggregation
 });
