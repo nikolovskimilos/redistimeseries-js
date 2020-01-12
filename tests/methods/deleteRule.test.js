@@ -1,5 +1,5 @@
 
-const { commands } = require('../../src/constants');
+const { commands } = require('../constants');
 const RedisTimeSeries = require('../../index');
 
 const { TS_DELETERULE } = commands;
@@ -18,7 +18,7 @@ let rts = null;
 
 const validateQuery = (query) => {
   const [command, params] = rts.client.send_command.mock.calls[0];
-  expect([command, ...params].join(SIGN_SPACE)).toBe(query);
+  expect([command, ...params].join(SIGN_SPACE)).toBe(query.join(SIGN_SPACE));
 };
 
 
@@ -32,21 +32,21 @@ describe('deleteRule method tests', () => {
 
   it('should delete aggregation rule', async () => {
     const { srcKey, dstKey } = TEST_PARAMS;
-    const query = `${TS_DELETERULE} ${srcKey} ${dstKey}`;
+    const query = [TS_DELETERULE, srcKey, dstKey];
 
-    await rts.deleteRule(srcKey, dstKey);
+    await rts.deleteRule(srcKey, dstKey).send();
     validateQuery(query);
   });
 
   it('should throw an error, no arguments', async () => {
-    await expect(rts.deleteRule()).rejects.toThrow();
+    await expect(rts.deleteRule().send()).rejects.toThrow();
   });
 
   it('should throw an error, source key is invalid', async () => {
-    await expect(rts.deleteRule({})).rejects.toThrow();
+    await expect(rts.deleteRule({}).send()).rejects.toThrow();
   });
 
   it('should throw an error, destination key is invalid', async () => {
-    await expect(rts.deleteRule(TEST_PARAMS.srcKey, {})).rejects.toThrow();
+    await expect(rts.deleteRule(TEST_PARAMS.srcKey, {}).send()).rejects.toThrow();
   });
 });

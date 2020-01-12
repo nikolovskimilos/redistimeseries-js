@@ -1,15 +1,15 @@
 const QuerySchema = require('../../QuerySchema');
 const { Validator } = require('../utils');
 
-const RETENTION = 'RETENTION';
+const COUNT = 'COUNT';
 
 /**
- *RETENTION retentionTime
+ *COUNT count
  */
 module.exports = QuerySchema
-  .create(RETENTION)
+  .create(COUNT)
   .param(
-    'retention',
+    'count',
     (value) => !Validator.isUndefined(value) && Validator.isInteger(value) && value >= 0
   )
-  .serialize((retention) => [RETENTION, retention]);
+  .serialize((count) => [COUNT, count]);

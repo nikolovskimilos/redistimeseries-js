@@ -1,9 +1,7 @@
-const Validator = require('./Validator');
-
 
 class QuerySchema {
   constructor(command) {
-    if (!command && Validator.isString(command)) {
+    if (!command && typeof command === 'string') {
       throw new Error('Command is required to create a query');
     }
 
@@ -11,19 +9,14 @@ class QuerySchema {
     this._methodName = command.toLowerCase();
     this._params = [];
     this._queries = [];
-    this._data = null;
-    this._exports = null;
+    this._data = {};
+    this._exports = {};
     this._executable = false;
-    this._serializedMethod = () => {}
+    this._serializedMethod = this._defaultSerializeMethod.bind(this);
   }
 
-  static create(command) { 
+  static create(command) {
     return new QuerySchema(command);
-  }
-
-  executable() {
-    this._executable = true;
-    return this;
   }
 
   methodName(methodName) {
@@ -35,35 +28,36 @@ class QuerySchema {
   }
 
   data(data = {}) {
-    if (!data) {
-      throw new Error('Data is required');
+    if (!data && typeof data === 'object') {
+      throw new Error('Data should be an object');
     }
-    this._data = data;
+    Object.assign(this._data, data);
     return this;
   }
 
-  exports(exportedData = {}){
-    this._exports = exportedData;
+  exports(exportedData = {}) {
+    if (!exportedData && typeof exportedData === 'object') {
+      throw new Error('Exported data should be an object');
+    }
+
+    Object.assign(this._exports, exportedData);
     return this;
   }
 
-  param(name = null, validation = null) {
-    this._params.push({ name, validation });
+  param(name = null, validation = () => true) {
+    this._params.push({ name, validation: validation.bind(this) });
     return this;
   }
 
   subquery(query = null, required = false) {
     this._queries.push({ query, required });
+    Object.assign(this._exports, query.getExports());
     return this;
   }
 
   serialize(serializeMethod) {
     this._serializedMethod = serializeMethod.bind(this);
     return this;
-  }
-
-  isExecutable() {
-    return this._executable;
   }
 
   getTemplateString() {
@@ -100,8 +94,16 @@ class QuerySchema {
     return this._exports;
   }
 
+  getData() {
+    return this._data;
+  }
+
   getSerializator() {
     return this._serializedMethod;
+  }
+
+  _defaultSerializeMethod() {
+    return [this.command, ...this._params];
   }
 }
 

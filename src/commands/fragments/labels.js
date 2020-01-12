@@ -1,5 +1,5 @@
 const QuerySchema = require('../../QuerySchema');
-const Validator = require('../../Validator');
+const { Validator } = require('../utils');
 
 const LABELS = 'LABELS';
 
@@ -12,7 +12,7 @@ module.exports = QuerySchema
     'labels',
     (value) => !Validator.isUndefined(value) && Validator.isObject(value)
   )
-  .serialize((labels) => 
-  	Object.keys(labels).reduce((acc, labelName) => acc.concat([labelName, labels[labelName]]), [LABELS])
-  );
-
+  .serialize((labels) => Object.keys(labels).reduce(
+    (acc, labelName) => acc.concat([labelName, labels[labelName]]),
+    [LABELS]
+  ));

@@ -1,8 +1,9 @@
 
 const QuerySchema = require('../QuerySchema');
-const Validator = require('../Validator');
+const { Validator } = require('./utils');
 
 const { retention, labels } = require('./fragments');
+
 const TS_ALTER = 'TS.ALTER';
 
 
@@ -11,7 +12,7 @@ const TS_ALTER = 'TS.ALTER';
  */
 module.exports = QuerySchema
   .create(TS_ALTER)
-  .executable()
+  .data({ executable: true })
   .methodName('alter')
   .param(
     'key',

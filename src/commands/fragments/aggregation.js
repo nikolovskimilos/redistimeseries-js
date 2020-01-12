@@ -1,5 +1,5 @@
 const QuerySchema = require('../../QuerySchema');
-const Validator = require('../../Validator');
+const { Validator } = require('../utils');
 
 const Aggregation = {
   AVG: 'avg',
@@ -16,22 +16,19 @@ const Aggregation = {
   VARS: 'var.s'
 };
 
+const AggregationTypes = Object.values(Aggregation);
+
+const AGGREGATION = 'AGGREGATION';
+
 /**
  * AGGREGATION aggregationType timeBucket
  */
 module.exports = QuerySchema
-  .create('AGGREGATION')
-  .exports({ Aggregation })
-  .data({
-    Aggregation,
-    AggregationTypes: Object.entries(Aggregation)
-  })
+  .create(AGGREGATION)
+  .exports({ Aggregation })  
   .param(
     'aggregationType',
-    (value) => {
-      const { AggregationTypes } = this.data;
-      return AggregationTypes.includes(value);
-    }
+    (value) => AggregationTypes.includes(value)
   )
   .param(
     'timeBucket',
@@ -40,6 +37,4 @@ module.exports = QuerySchema
       && Validator.isInteger(value)
     )
   )
-  .serialize((aggregationType, timeBucket) =>
-    [AGGREGATION, aggregationType, timeBucket]
-  );
+  .serialize((aggregationType, timeBucket) => [AGGREGATION, aggregationType, timeBucket]);

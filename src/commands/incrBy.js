@@ -2,31 +2,29 @@
 const QuerySchema = require('../QuerySchema');
 const { Validator } = require('./utils');
 
-const { retention, labels, uncompressed } = require('./fragments');
+const { retention, labels, timestamp, uncompressed } = require('./fragments');
 
-const TS_ADD = 'TS.ADD';
+const TS_INCRBY = 'TS.INCRBY';
 
 
 /**
- * TS.ADD key timestamp value [RETENTION retentionTime] [LABELS field value..] [UNCOMPRESSED]
+ * TS.INCRBY key value [TIMESTAMP timestamp] [RETENTION retentionTime] [UNCOMPRESSED] [LABELS field value..]
  */
 module.exports = QuerySchema
-  .create(TS_ADD)
+  .create(TS_INCRBY)
   .data({ executable: true })
-  .methodName('add')
+  .methodName('incrBy')
   .param(
     'key',
     (value) => !Validator.isUndefined(value) && Validator.isString(value)
   )
   .param(
-    'timestamp',
-    (value) => !Validator.isUndefined(value) && Validator.isInteger(value) && value > 0
-  )
-  .param(
     'value',
     (value) => !Validator.isUndefined(value) && Validator.isFloat(value)
   )
-  .serialize((key, timestamp, value) => [TS_ADD, key, timestamp, value])
+  .serialize((key, value) => [TS_INCRBY, key, value])
   .subquery(retention)
+  .subquery(timestamp)
   .subquery(uncompressed)
   .subquery(labels);
+  

@@ -1,5 +1,5 @@
 
-const { commands } = require('../../src/constants');
+const { commands } = require('../constants');
 const RedisTimeSeries = require('../../index');
 
 const { TS_GET } = commands;
@@ -17,7 +17,7 @@ let rts = null;
 
 const validateQuery = (query) => {
   const [command, params] = rts.client.send_command.mock.calls[0];
-  expect([command, ...params].join(SIGN_SPACE)).toBe(query);
+  expect([command, ...params].join(SIGN_SPACE)).toBe(query.join(SIGN_SPACE));
 };
 
 
@@ -31,13 +31,13 @@ describe('get method tests', () => {
 
   it('should fetch time series', async () => {
     const { key } = TEST_PARAMS;
-    const query = `${TS_GET} ${key}`;
+    const query = [TS_GET, key];
 
-    await rts.get(key);
+    await rts.get(key).send();
     validateQuery(query);
   });
 
   it('should throw an error, no arguments', async () => {
-    await expect(rts.get()).rejects.toThrow();
+    await expect(rts.get().send()).rejects.toThrow();
   });
 });

@@ -1,17 +1,18 @@
 
 const QuerySchema = require('../QuerySchema');
-const Validator = require('../Validator');
+const { Validator } = require('./utils');
 
 const { retention, labels, uncompressed } = require('./fragments');
+
 const TS_CREATE = 'TS.CREATE';
 
 
 /**
- * TS.CREATE key [RETENTION retentionTime] [LABELS field value..] [UNCOMPRESSED]
+ * TS.CREATE key [RETENTION retentionTime] [UNCOMPRESSED] [LABELS field value..] 
  */
 module.exports = QuerySchema
   .create(TS_CREATE)
-  .executable()
+  .data({ executable: true })
   .methodName('create')
   .param(
     'key',
@@ -19,5 +20,5 @@ module.exports = QuerySchema
   )
   .serialize((key) => [TS_CREATE, key])
   .subquery(retention)
-  .subquery(labels)
-  .subquery(uncompressed);
+  .subquery(uncompressed)
+  .subquery(labels);
