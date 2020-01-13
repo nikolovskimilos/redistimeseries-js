@@ -1,6 +1,6 @@
 
 const Query = require('../../src/Query');
-const { commands } = require('../../src/constants');
+const { commands } = require('../constants');
 
 describe('Query component tests', () => {
   beforeEach(() => {

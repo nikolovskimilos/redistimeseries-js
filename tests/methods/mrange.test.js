@@ -27,8 +27,7 @@ const TEST_PARAMS = {
     value1: 22,
     value2: 23
   },
-  count: 20,
-  withLabels: true
+  count: 20
 };
 
 let rts = null;
@@ -98,7 +97,7 @@ describe('mrange method tests', () => {
   });
 
   it('should fetch range of time series with labels for given key and aggregation', async () => {
-    const { fromTimestamp, toTimestamp, aggregation, withLabels, filter } = TEST_PARAMS;
+    const { fromTimestamp, toTimestamp, aggregation, filter } = TEST_PARAMS;
     const { type, timeBucket } = aggregation;
     const { label1, value1 } = filter;
 

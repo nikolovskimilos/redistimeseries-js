@@ -14,6 +14,6 @@ module.exports = QuerySchema
     (values) => !Validator.isUndefined(values) && Array.isArray(values) && values.length > 0
   )
   .serialize((values) => values.reduce(
-  	(acc, { key, timestamp, value }) => acc.concat([key, timestamp, value]), 
-  	[TS_MADD]
+    (acc, { key, timestamp, value }) => acc.concat([key, timestamp, value]),
+    [TS_MADD]
   ));
