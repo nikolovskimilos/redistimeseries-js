@@ -9,7 +9,7 @@ module.exports.commands = {
   TS_CREATERULE: 'TS.CREATERULE',
   TS_DELETERULE: 'TS.DELETERULE',
   TS_GET: 'TS.GET',
-  TS_MGET: 'TS_MGET',
+  TS_MGET: 'TS.MGET',
   TS_RANGE: 'TS.RANGE',
   TS_MRANGE: 'TS.MRANGE',
   TS_INFO: 'TS.INFO',

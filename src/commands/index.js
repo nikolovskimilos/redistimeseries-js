@@ -1,25 +1,33 @@
 
-const create = require('./create');
-const alter = require('./alter');
 const add = require('./add');
-const incrBy = require('./incrBy');
-const decrBy = require('./decrBy');
+const alter = require('./alter');
+const create = require('./create');
 const createRule = require('./createRule');
+const decrBy = require('./decrBy');
 const deleteRule = require('./deleteRule');
-const info = require('./info');
 const get = require('./get');
+const incrBy = require('./incrBy');
+const info = require('./info');
+const madd = require('./madd');
 const mget = require('./mget');
+const mrange = require('./mrange');
+const queryIndex = require('./queryIndex');
+const range = require('./range');
 
 
 module.exports = {
-  create,
-  alter,
   add,
-  incrBy,
-  decrBy,
+  alter,
+  create,
   createRule,
+  decrBy,
   deleteRule,
-  info,
   get,
-  mget
+  incrBy,
+  info,
+  madd,
+  mget,
+  mrange,
+  queryIndex,
+  range
 };

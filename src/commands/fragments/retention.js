@@ -4,7 +4,7 @@ const { Validator } = require('../utils');
 const RETENTION = 'RETENTION';
 
 /**
- *RETENTION retentionTime
+ * RETENTION retentionTime
  */
 module.exports = QuerySchema
   .create(RETENTION)

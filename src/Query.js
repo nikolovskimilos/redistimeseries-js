@@ -39,7 +39,7 @@ class Query {
     this._schema.getParams().forEach(({ name, validation }, index) => {
       const value = this._params[index];
       if (validation && !validation(value)) {
-        throw new Error(`Invalid value '${value}' for parameter '${name}' in ${this._schema.getMethodName()} qury`);
+        throw new Error(`Invalid value '${value}' for parameter '${name}' in ${this._schema.getMethodName()} query`);
       }
     });
 

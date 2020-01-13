@@ -16,6 +16,6 @@ module.exports = {
   labels,
   retention,
   timestamp,
-  uncompressed, 
+  uncompressed,
   withLabels
 };

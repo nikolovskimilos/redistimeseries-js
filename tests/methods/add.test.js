@@ -31,8 +31,6 @@ const validateQuery = (query) => {
   expect([command, ...params].join(SIGN_SPACE)).toBe(query.join(SIGN_SPACE));
 };
 
-const createQuery = (array) => array.join(SIGN_SPACE);
-
 describe('add method tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -79,7 +77,7 @@ describe('add method tests', () => {
       .labels(labels)
       .uncompressed()
       .send();
-      
+
     validateQuery(query);
   });
 

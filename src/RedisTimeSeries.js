@@ -12,7 +12,7 @@ class RedisTimeSeries {
     this.client = null;
     this._loadedSchemas = {};
 
-    this.load(commands);
+    this.load(Object.values(commands));
   }
 
 
@@ -59,8 +59,8 @@ class RedisTimeSeries {
 
 
   load(querySchemas) {
-    Object.assign(this._loadedSchemas, querySchemas);
-    Object.values(querySchemas).forEach((querySchema) => {
+    this._loadedSchemas = this._loadedSchemas.concat(querySchemas);
+    querySchemas.forEach((querySchema) => {
       this[querySchema.getMethodName()] = (...params) => Query
         .create(querySchema)
         .params(params)

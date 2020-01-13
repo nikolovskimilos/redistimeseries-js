@@ -11,6 +11,6 @@ module.exports = QuerySchema
   .exports({ Filter })
   .param(
     'filter',
-    (value) => !Validator.isUndefined(value) && Validator.isArray(value) && value.length > 0
+    (value) => !Validator.isUndefined(value) && Array.isArray(value) && value.length > 0
   )
-  .serialize((filter) => [FILTER]);
+  .serialize((filter) => [FILTER, ...filter]);

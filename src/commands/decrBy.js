@@ -27,4 +27,3 @@ module.exports = QuerySchema
   .subquery(timestamp)
   .subquery(uncompressed)
   .subquery(labels);
-  

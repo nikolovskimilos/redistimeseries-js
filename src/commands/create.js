@@ -8,7 +8,7 @@ const TS_CREATE = 'TS.CREATE';
 
 
 /**
- * TS.CREATE key [RETENTION retentionTime] [UNCOMPRESSED] [LABELS field value..] 
+ * TS.CREATE key [RETENTION retentionTime] [UNCOMPRESSED] [LABELS field value..]
  */
 module.exports = QuerySchema
   .create(TS_CREATE)

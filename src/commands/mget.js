@@ -1,16 +1,15 @@
 
 const QuerySchema = require('../QuerySchema');
-const { Validator, Filter } = require('./utils');
+const { filter } = require('./fragments');
 
 const TS_MGET = 'TS.MGET';
 
 /**
- * TS.GET key
+ * TS.MGET FILTER filter...
  */
 module.exports = QuerySchema
   .create(TS_MGET)
-  .exports({ Filter })
   .data({ executable: true })
   .methodName('mget')
-  .param()
-  .serialize((key) => [TS_MGET, key]);
+  .serialize(() => [TS_MGET])
+  .subquery(filter, true);

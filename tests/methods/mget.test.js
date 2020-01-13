@@ -1,5 +1,5 @@
 
-const { commands, keywords } = require('../../src/constants');
+const { commands, keywords } = require('../constants');
 const RedisTimeSeries = require('../../index');
 
 const { Filter } = RedisTimeSeries;
@@ -24,7 +24,7 @@ let rts = null;
 
 const validateQuery = (query) => {
   const [command, params] = rts.client.send_command.mock.calls[0];
-  expect([command, ...params].join(SIGN_SPACE)).toBe(query);
+  expect([command, ...params].join(SIGN_SPACE)).toBe(query.join(SIGN_SPACE));
 };
 
 
@@ -38,37 +38,48 @@ describe('mget method tests', () => {
 
   it('should fetch time series with given label', async () => {
     const { label1 } = TEST_PARAMS;
-    const query = `${TS_MGET} ${FILTER} ${label1}=`;
+    const query = [TS_MGET, FILTER, `${label1}=`];
 
-    await rts.mget(
-      Filter.exists(label1)
-    );
+    await rts
+      .mget()
+      .filter([Filter.exists(label1)])
+      .send();
     validateQuery(query);
   });
 
   it('should fetch time series with multiple given labels', async () => {
     const { label1, label2 } = TEST_PARAMS;
-    const query = `${TS_MGET} ${FILTER} ${label1}= ${label2}!=`;
+    const query = [TS_MGET, FILTER, `${label1}=`, `${label2}!=`];
 
-    await rts.mget(
-      Filter.exists(label1),
-      Filter.notExists(label2)
-    );
+    await rts
+      .mget()
+      .filter([
+        Filter.exists(label1),
+        Filter.notExists(label2)
+      ])
+      .send();
     validateQuery(query);
   });
 
   it('should fetch time series with multiple given labels', async () => {
     const { label1, label2, value1, value2 } = TEST_PARAMS;
-    const query = `${TS_MGET} ${FILTER} ${label1}=${value1} ${label2}=(${value1},${value2})`;
+    const query = [TS_MGET, FILTER, `${label1}=${value1}`, `${label2}=(${value1},${value2})`];
 
-    await rts.mget(
-      Filter.equal(label1, value1),
-      Filter.in(label2, [value1, value2])
-    );
+    await rts
+      .mget()
+      .filter([
+        Filter.equal(label1, value1),
+        Filter.in(label2, [value1, value2])
+      ])
+      .send();
     validateQuery(query);
   });
 
   it('should fail, no arguments', async () => {
-    await expect(rts.mget()).rejects.toThrow();
+    await expect(rts.mget().send()).rejects.toThrow();
+  });
+
+  it('should fail, empty filter', async () => {
+    await expect(rts.mget().filter().send()).rejects.toThrow();
   });
 });

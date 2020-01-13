@@ -22,7 +22,7 @@ const TEST_PARAMS = {
 };
 
 let rts = null;
-let aggregationQuery = null
+let aggregationQuery = null;
 
 const validateQuery = (query) => {
   const [command, params] = rts.client.send_command.mock.calls[0];

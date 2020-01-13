@@ -25,7 +25,7 @@ const AGGREGATION = 'AGGREGATION';
  */
 module.exports = QuerySchema
   .create(AGGREGATION)
-  .exports({ Aggregation })  
+  .exports({ Aggregation })
   .param(
     'aggregationType',
     (value) => AggregationTypes.includes(value)
