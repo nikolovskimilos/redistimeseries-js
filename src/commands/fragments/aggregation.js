@@ -36,5 +36,4 @@ module.exports = QuerySchema
       !Validator.isUndefined(value)
       && Validator.isInteger(value)
     )
-  )
-  .serialize((aggregationType, timeBucket) => [AGGREGATION, aggregationType, timeBucket]);
+  );

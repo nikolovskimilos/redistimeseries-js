@@ -22,7 +22,6 @@ module.exports = QuerySchema
     'value',
     (value) => !Validator.isUndefined(value) && Validator.isFloat(value)
   )
-  .serialize((key, value) => [TS_INCRBY, key, value])
   .subquery(retention)
   .subquery(timestamp)
   .subquery(uncompressed)

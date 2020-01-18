@@ -1,7 +1,9 @@
+const SIGN_SPACE = ' ';
+const QuerySchema = require('./QuerySchema');
 
 class Query {
   constructor(schema) {
-    if (!schema) {
+    if (!schema || !(schema instanceof QuerySchema)) {
       throw new Error('QuerySchema is required');
     }
 
@@ -30,7 +32,11 @@ class Query {
     return new Query(schema);
   }
 
-  params(values = []) {
+  params(values) {
+    if (!values || !Array.isArray(values)) {
+      throw new Error('Param values should be an array of values');
+    }
+
     this._params = values;
     return this;
   }
@@ -55,22 +61,23 @@ class Query {
   }
 
   serialize() {
-    const serialize = this._schema.getSerializator();
-    let queryArray = serialize(...this._params);
+    const serialize = this._schema.getSerializator().bind(this);
+    const queryArray = [];
+    queryArray.push(serialize(this._schema.getCommand(), ...this._params));
 
     this._queriesOrder.forEach((subqueryName) => {
       const subquery = this._queries[subqueryName];
       if (subquery) {
-        queryArray = queryArray.concat(subquery.serialize());
+        queryArray.push(subquery.serialize());
       }
     });
 
-    return queryArray;
+    return queryArray.join(SIGN_SPACE);
   }
 
-  sendHandler(sendHandler = null) {
-    if (!sendHandler) {
-      throw new Error('Send handler is required');
+  sendHandler(sendHandler) {
+    if (!sendHandler || typeof sendHandler !== 'function') {
+      throw new Error('Send handler as function is required');
     }
 
     this._sendHandler = sendHandler;
@@ -82,7 +89,7 @@ class Query {
     this.validate();
 
     // serialize query
-    const response = await this._sendHandler(...this.serialize());
+    const response = await this._sendHandler(this.serialize());
 
     // parse response
     return response;

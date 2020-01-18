@@ -21,6 +21,13 @@ describe('RedisTimeSeries component tests', () => {
     rts = new RedisTimeSeries(TEST_OPTIONS);
   });
 
+  it('should create client with out options', async () => {
+
+    expect(() => {
+      rts = new RedisTimeSeries();
+    }).not.toThrow();
+  });
+
   it('should fetch redis client', async () => {
     const redisClient = { dummy: 'client' };
     RedisMock.createClient.mockReturnValueOnce(redisClient);

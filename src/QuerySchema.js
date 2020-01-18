@@ -1,7 +1,9 @@
+const SIGN_SPACE = ' ';
+const SIGN_UNDERSCORE = '_';
 
 class QuerySchema {
   constructor(command) {
-    if (!command && typeof command === 'string') {
+    if (!command || typeof command !== 'string') {
       throw new Error('Command is required to create a query');
     }
 
@@ -12,7 +14,7 @@ class QuerySchema {
     this._data = {};
     this._exports = {};
     this._executable = false;
-    this._serializedMethod = this._defaultSerializeMethod.bind(this);
+    this._serializedMethod = this._defaultSerializeMethod;
   }
 
   static create(command) {
@@ -23,20 +25,20 @@ class QuerySchema {
     if (!methodName) {
       throw new Error('Method name is required');
     }
-    this._methodName = methodName;
+    this._methodName = methodName.split(SIGN_SPACE).join(SIGN_UNDERSCORE);
     return this;
   }
 
-  data(data = {}) {
-    if (!data && typeof data === 'object') {
+  data(data) {
+    if (!data || typeof data !== 'object') {
       throw new Error('Data should be an object');
     }
     Object.assign(this._data, data);
     return this;
   }
 
-  exports(exportedData = {}) {
-    if (!exportedData && typeof exportedData === 'object') {
+  exports(exportedData) {
+    if (!exportedData || typeof exportedData !== 'object') {
       throw new Error('Exported data should be an object');
     }
 
@@ -45,11 +47,19 @@ class QuerySchema {
   }
 
   param(name = null, validation = () => true) {
+    if (!name) {
+      throw new Error('Param name is required');
+    }
+
     this._params.push({ name, validation: validation.bind(this) });
     return this;
   }
 
   subquery(query = null, required = false) {
+    if (!query) {
+      throw new Error('Subquery is required');
+    }
+
     this._queries.push({ query, required });
     Object.assign(this._exports, query.getExports());
     return this;
@@ -78,6 +88,10 @@ class QuerySchema {
     return template;
   }
 
+  getCommand() {
+    return this._command;
+  }
+
   getMethodName() {
     return this._methodName;
   }
@@ -102,8 +116,8 @@ class QuerySchema {
     return this._serializedMethod;
   }
 
-  _defaultSerializeMethod() {
-    return [this.command, ...this._params];
+  _defaultSerializeMethod(command, ...params) {
+    return [command, ...params].join(SIGN_SPACE);
   }
 }
 

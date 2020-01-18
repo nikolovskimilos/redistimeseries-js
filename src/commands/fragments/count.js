@@ -11,5 +11,4 @@ module.exports = QuerySchema
   .param(
     'count',
     (value) => !Validator.isUndefined(value) && Validator.isInteger(value) && value >= 0
-  )
-  .serialize((count) => [COUNT, count]);
+  );

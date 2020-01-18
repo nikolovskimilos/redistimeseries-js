@@ -11,5 +11,4 @@ module.exports = QuerySchema
   .create(TS_MGET)
   .data({ executable: true })
   .methodName('mget')
-  .serialize(() => [TS_MGET])
   .subquery(filter, true);

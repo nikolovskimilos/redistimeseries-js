@@ -11,5 +11,4 @@ module.exports = QuerySchema
   .param(
     'timestamp',
     (value) => !Validator.isUndefined(value) && Validator.isInteger(value) && value >= 0
-  )
-  .serialize((retention) => [TIMESTAMP, retention]);
+  );

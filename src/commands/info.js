@@ -15,5 +15,4 @@ module.exports = QuerySchema
   .param(
     'key',
     (value) => !Validator.isUndefined(value) && Validator.isString(value)
-  )
-  .serialize((key) => [TS_INFO, key]);
+  );

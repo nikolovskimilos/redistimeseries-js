@@ -20,7 +20,6 @@ module.exports = QuerySchema
     'toTimestamp',
     (value) => !Validator.isUndefined(value) && Validator.isInteger(value) && value >= 0
   )
-  .serialize((fromTimestamp, toTimestamp) => [TS_MRANGE, fromTimestamp, toTimestamp])
   .subquery(count)
   .subquery(aggregation)
   .subquery(withLabels)

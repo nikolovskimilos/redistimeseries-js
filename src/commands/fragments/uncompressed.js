@@ -6,6 +6,4 @@ const UNCOMPRESSED = 'UNCOMPRESSED';
 /**
  * UNCOMPRESSED
  */
-module.exports = QuerySchema
-  .create(UNCOMPRESSED)
-  .serialize(() => [UNCOMPRESSED]);
+module.exports = QuerySchema.create(UNCOMPRESSED);

@@ -22,5 +22,4 @@ module.exports = QuerySchema
     'destKey',
     (value) => !Validator.isUndefined(value) && Validator.isString(value)
   )
-  .serialize((sourceKey, destKey) => [TS_CREATERULE, sourceKey, destKey])
   .subquery(aggregation, true);

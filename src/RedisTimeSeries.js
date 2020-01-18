@@ -2,6 +2,7 @@ const Redis = require('redis');
 const Query = require('./Query');
 const commands = require('./commands');
 
+const SIGN_SPACE = ' ';
 
 class RedisTimeSeries {
   /**
@@ -10,7 +11,7 @@ class RedisTimeSeries {
   constructor(options = {}) {
     this.options = options;
     this.client = null;
-    this._loadedSchemas = {};
+    this._loadedSchemas = [];
 
     this.load(Object.values(commands));
   }
@@ -44,8 +45,8 @@ class RedisTimeSeries {
   /**
    * Send plain command to redis
    */
-  async send(...params) {
-    const [command, ...args] = params;
+  async send(query) {
+    const [command, ...args] = query.split(SIGN_SPACE);
     return new Promise((resolve, reject) => {
       this.client.send_command(command, args, (error, result) => {
         if (error) {

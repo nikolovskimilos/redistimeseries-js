@@ -19,5 +19,4 @@ module.exports = QuerySchema
   .param(
     'destKey',
     (value) => !Validator.isUndefined(value) && Validator.isString(value)
-  )
-  .serialize((sourceKey, destKey) => [TS_DELETERULE, sourceKey, destKey]);
+  );
