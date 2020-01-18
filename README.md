@@ -243,13 +243,9 @@ client.get('temperature:2:32').send();
 #### mget
 ```javascript
 // TS.MGET FILTER area_id=32
-<<<<<<< HEAD
-// 
+
 const RedisTimeSeries = require('redistimeseries-js');
 const { Filter } = RedisTimeSeries;
-=======
-const { Filter } = require('redistimeseries-js');
->>>>>>> master
 
 // ...
 
