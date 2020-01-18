@@ -1,9 +1,23 @@
 
 const RedisTimeSeries = require('./src/RedisTimeSeries');
-const Filter = require('./src/Filter');
-const { aggregationTypes: Aggregation } = require('./src/constants');
-
+const commands = require('./src/commands');
 
 module.exports = RedisTimeSeries;
-module.exports.Filter = Filter;
-module.exports.Aggregation = Aggregation;
+
+const setExports = (schemas) => {
+  Object.values(schemas).forEach((querySchema) => {
+  	const schemaExports = querySchema.getExports();
+  	if (schemaExports) {
+	  	Object.keys(schemaExports).forEach(name => 
+	  		module.exports[name] = schemaExports[name]
+	  	);
+	  }
+  });
+}
+
+setExports(commands);
+
+
+
+
+

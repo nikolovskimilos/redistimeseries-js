@@ -1,111 +1,102 @@
-
-const Validator = require('./Validator');
-const { commands, keywords } = require('./constants');
-
-const commandsArray = Object.values(commands);
+const SIGN_SPACE = ' ';
+const QuerySchema = require('./QuerySchema');
 
 class Query {
-  constructor(command) {
-    this.command = command;
-    this.params = [];
-  }
-
-  addParams(...params) {
-    this.params = this.params.concat(params);
-    return this;
-  }
-
-  retention(retention) {
-    this._validateAndDo(retention, Validator.checkRetention, () => {
-      this.addParams(keywords.RETENTION, retention);
-    });
-
-    return this;
-  }
-
-  labels(labelValues = {}) {
-    const labels = Object.keys(labelValues);
-
-    if (labels.length > 0) {
-      this.addParams(keywords.LABELS);
-      labels.forEach((labelName) => this.addParams(labelName, labelValues[labelName]));
+  constructor(schema) {
+    if (!schema || !(schema instanceof QuerySchema)) {
+      throw new Error('QuerySchema is required');
     }
 
-    return this;
+    this._schema = schema;
+    this._params = [];
+    this._queries = {};
+    this._queriesOrder = [];
+
+    this._sendHandler = null;
+    this._init();
   }
 
-  aggregation(aggregation) {
-    this._validateAndDo(aggregation, Validator.checkAggregation, () => {
-      const { type, timeBucket } = aggregation;
-      this.addParams(keywords.AGGREGATION, type, timeBucket);
+  _init() {
+    this._schema.getSubqueries().forEach(({ query: subquerySchema }) => {
+      const methodName = subquerySchema.getMethodName();
+      this._queriesOrder.push(methodName);
+      this[methodName] = (...params) => {
+        const subquery = Query.create(subquerySchema).params(params);
+        this._queries[methodName] = subquery;
+        return this;
+      };
     });
-
-    return this;
   }
 
-  count(count) {
-    this._validateAndDo(count, Validator.checkCount, () => {
-      this.addParams(keywords.COUNT, count);
-    });
-
-    return this;
+  static create(schema) {
+    return new Query(schema);
   }
 
-  timestamp(timestamp) {
-    this._validateAndDo(timestamp, Validator.checkTimestamp, () => {
-      this.addParams(keywords.TIMESTAMP, timestamp);
-    });
-
-    return this;
-  }
-
-  uncompressed(uncompressed) {
-    this._validateAndDo(uncompressed, Validator.checkUncompressedFlag, () => {
-      this.addParams(...(uncompressed ? [keywords.UNCOMPRESSED] : []));
-    });
-
-    return this;
-  }
-
-  withLabels(withLabels = false) {
-    this._validateAndDo(withLabels, Validator.checkWithLabelsFlag, () => {
-      this.addParams(...(withLabels ? [keywords.WITHLABELS] : []));
-    });
-
-    return this;
-  }
-
-  pureFilter(filter) {
-    this._validateAndDo(filter, Validator.checkFilter, () => {
-      const filterArray = filter.map((condition) => condition.toString());
-      this.addParams(...filterArray);
-    });
-    return this;
-  }
-
-  filter(filter) {
-    return this
-      .addParams(keywords.FILTER)
-      .pureFilter(filter);
-  }
-
-  build() {
-    return [this.command, ...this.params];
-  }
-
-  _validateAndDo(value, validator, callback) {
-    if (!Validator.isUndefined(value)) {
-      validator(value);
-      callback();
-    }
-  }
-
-  static create(command) {
-    if (!commandsArray.includes(command)) {
-      throw new Error('Unknown command');
+  params(values) {
+    if (!values || !Array.isArray(values)) {
+      throw new Error('Param values should be an array of values');
     }
 
-    return new Query(command);
+    this._params = values;
+    return this;
+  }
+
+  validate() {
+    this._schema.getParams().forEach(({ name, validation }, index) => {
+      const value = this._params[index];
+      if (validation && !validation(value)) {
+        throw new Error(`Invalid value '${value}' for parameter '${name}' in ${this._schema.getMethodName()} query`);
+      }
+    });
+
+    this._schema.getSubqueries().forEach(({ query: subquerySchema, required }) => {
+      const methodName = subquerySchema.getMethodName();
+      const subquery = this._queries[methodName];
+      if (subquery) {
+        subquery.validate();
+      } else if (required) {
+        throw new Error(`${methodName} is required for ${this._schema.getMethodName()} query`);
+      }
+    });
+  }
+
+  serialize() {
+    const serialize = this._schema.getSerializator().bind(this);
+    const queryArray = [];
+    queryArray.push(serialize(this._schema.getCommand(), ...this._params));
+
+    this._queriesOrder.forEach((subqueryName) => {
+      const subquery = this._queries[subqueryName];
+      if (subquery) {
+        queryArray.push(subquery.serialize());
+      }
+    });
+
+    return queryArray.join(SIGN_SPACE);
+  }
+
+  sendHandler(sendHandler) {
+    if (!sendHandler || typeof sendHandler !== 'function') {
+      throw new Error('Send handler as function is required');
+    }
+
+    this._sendHandler = sendHandler;
+    return this;
+  }
+
+  async send() {
+    // validate query
+    this.validate();
+
+    // serialize query
+    const response = await this._sendHandler(this.serialize());
+
+    // parse response
+    return response;
+  }
+
+  getSchema() {
+    return this._schema;
   }
 }
 

@@ -24,15 +24,14 @@ const options = {
 
 const rtsClient = new RedisTimeSeries(options);
 const key = 'temperature';
-const retention = 60000;
 
 const updateTemperature = async () => {
-  await rtsClient.add(key, Date.now(), Math.floor(Math.random()*30));
+  await rtsClient.add(key, Date.now(), Math.floor(Math.random()*30)).send();
 }
 
 const start = async () => {
   await rtsClient.connect();
-  await rtsClient.create(key, { retention });
+  await rtsClient.create(key).retention(60000).send();
   setInterval(updateTemperature, 1000);
 }
 
@@ -90,39 +89,32 @@ Examples for each method are shown below, notice that optional parameters are al
 ```javascript
 // TS.CREATE temperature:2:32 RETENTION 60000 LABELS sensor_id 2 area_id 32 UNCOMPRESSED
 
-client.create('temperature:2:32', {
-  retention: 60000,
-  labels: {
-    sensor_id: 2,
-    area_id: 32
-  },
-  uncompressed: true
-});
+client
+  .create('temperature:2:32')
+  .retention(60000)
+  .labels({ sensor_id: 2, area_id: 32 })
+  .uncompressed()
+  .send();
 ```
 
 #### alter
 ```javascript
 // TS.ALTER temperature:2:32 LABELS sensor_id 2 area_id 32 sub_area_id 15
 
-client.alter('temperature:2:32', {
-  labels: {
-    sensor_id: 2,
-    area_id: 32,
-    sub_area_id: 15
-  }
-});
+client
+  .alter('temperature:2:32')
+  .labels({ sensor_id: 2, area_id: 32, sub_area_id: 15 })
+  .send();
 ```
 
 #### add
 ```javascript
 // TS.ADD temperature:2:32 1548149180000 26 LABELS sensor_id 2 area_id 32
 
-client.add('temperature:2:32', 1548149180000, 26, {
-  labels: {
-    sensor_id: 2,
-    area_id: 32
-  }
-});
+client
+  .add('temperature:2:32', 1548149180000, 26)
+  .labels({ sensor_id: 2, area_id: 32 })
+  .send();
 ```
 ```javascript
 // TS.ADD temperature:3:11 1548149183000 27 RETENTION 3600
@@ -136,100 +128,108 @@ client.add('temperature:2:32', 1548149180000, 26, {
 ```javascript
 // TS.MADD temperature:2:32 1548149180000 26 cpu:2:32 1548149183000 54
 
-client.madd(
-  { key: 'temperature:2:32', timestamp: 1548149180000, value: 26 }
-  { key: 'cpu:2:32', timestamp: 1548149183000, value: 54 }
-);
+client
+  .madd([
+    { key: 'temperature:2:32', timestamp: 1548149180000, value: 26 },
+    { key: 'cpu:2:32', timestamp: 1548149183000, value: 54 }
+  ]);
+  .send();
 ```
 
 #### incrBy
 ```javascript
 // TS.INCRBY temperature:2:32 3 RETENTION 30000
 
-client.incrBy('temperature:2:32', 3, {
-  retention: 30000
-});
+client
+  .incrBy('temperature:2:32', 3)
+  .retention(30000)
+  .send();
 ```
 
 #### decrBy
 ```javascript
 // TS.DECRBY temperature:2:32 5 RETENTION 30000 UNCOMPRESSED
 
-client.decrBy('temperature:2:32', 5, {
-  retention: 30000,
-  uncompressed: 5
-});
+client
+  .decrBy('temperature:2:32', 5)
+  .retention(30000)
+  .uncompressed()
+  .send();
 ```
 
 #### createRule
 ```javascript
 // TS.CREATERULE temperature:2:32 temperature:avg AGGREGATION avg 60000
 
-const { RedisTimeSeries, Aggregation } = require('redistimeseries-js');
+const RedisTimeSeries = require('redistimeseries-js');
+const { Aggregation } = RedisTimeSeries;
 
 // ...
 
-const aggregation = { type: Aggregation.AVG, timeBucket: 60000 };
-client.createRule('temperature:2:32', 'temperature:avg', aggregation);
+client
+  .createRule('temperature:2:32', 'temperature:avg')
+  .aggregation(Aggregation.AVG, 60000)
+  .send();
 ```
 
 #### deleteRule
 ```javascript
 // TS.DELETE temperature:2:32 temperature:avg
 
-client.deleteRule('temperature:2:32', 'temperature:avg');
+client.deleteRule('temperature:2:32', 'temperature:avg').send();
 ```
 
 #### range
 ```javascript
 // TS.RANGE temperature:3:32 1548149180000 1548149210000 AGGREGATION avg 5000
 
-const { Aggregation } = require('redistimeseries-js');
+const RedisTimeSeries = require('redistimeseries-js');
+const { Aggregation } = RedisTimeSeries;
 
 // ...
 
-const aggregation = { type: Aggregation.AVG, timeBucket: 5000 };
-client.range('temperature:2:32', 1548149180000, 1548149210000, {
-  aggregation
-});
+client
+  .range('temperature:2:32', 1548149180000, 1548149210000)
+  .aggregation(Aggregation.AVG, 5000)
+  .send();
 ```
 
 #### mrange
 ```javascript
 // TS.MRANGE 1548149180000 1548149210000 AGGREGATION avg 5000 FILTER area_id=32 sensor_id!=1
 
-const { Aggregation, Filter } = require('redistimeseries-js');
+const RedisTimeSeries = require('redistimeseries-js');
+const { Aggregation, Filter } = RedisTimeSeries;
 
 // ...
 
-const aggregation = { type: Aggregation.AVG, timeBucket: 5000 };
-const filter = [
-  Filter.equal('area_id', 32),
-  Filter.notEqual('sensor_id', 1)
-];
-
-client.mrange('temperature:2:32', 1548149180000, 1548149210000, filter, {
-  aggregation
-});
+client
+  .mrange('temperature:2:32', 1548149180000, 1548149210000)
+  .filter([
+    Filter.equal('area_id', 32),
+    Filter.notEqual('sensor_id', 1)
+  ])
+  .aggregation(Aggregation.AVG, 5000)
+  .send();
 ```
 
 ```javascript
 // TS.MRANGE 1548149180000 1548149210000 AGGREGATION avg 5000 WITHLABELS FILTER area_id=32 sensor_id!=1
 
-const { Aggregation, Filter } = require('redistimeseries-js');
+const RedisTimeSeries = require('redistimeseries-js');
+const { Aggregation, Filter } = RedisTimeSeries;
 
 // ...
 
-const aggregation = { type: Aggregation.AVG, timeBucket: 5000 };
-const filter = [
-  Filter.equal('area_id', 32),
-  Filter.notEqual('sensor_id', 1)
-];
-
-client.mrange('temperature:2:32', 1548149180000, 1548149210000, filter, {
-  aggregation,
-  withLabels: true
-});
+client
+  .mrange('temperature:2:32', 1548149180000, 1548149210000)
+  .aggregation(Aggregation.AVG, 5000)
+  .withLabels()
+  .filter([
+    Filter.equal('area_id', 32),
+    Filter.notEqual('sensor_id', 1)
+  ])
+  .send();
 ```
 
 
@@ -237,33 +237,36 @@ client.mrange('temperature:2:32', 1548149180000, 1548149210000, filter, {
 ```javascript
 // TS.GET temperature:2:32
 
-client.get('temperature:2:32');
+client.get('temperature:2:32').send();
 ```
 
 #### mget
 ```javascript
 // TS.MGET FILTER area_id=32
-const { Filter } = require('redistimeseries-js');
+
+const RedisTimeSeries = require('redistimeseries-js');
+const { Filter } = RedisTimeSeries;
 
 // ...
 
-client.mget([
-  Filter.equal('area_id', 32),
-]);
+client
+  .mget()
+  .filter([ Filter.equal('area_id', 32) ])
+  .send();
 ```
 
 #### info
 ```javascript
 // TS.INFO temperature:2:32
 
-client.info('temperature:2:32');
+client.info('temperature:2:32').send();
 ```
 
 #### queryIndex
 ```javascript
 // TS.QUERYINDEX sensor_id=2
 
-client.queryIndex([
-  Filter.equal('sensor_id', 2)
-]);
+client
+  .queryIndex([ Filter.equal('sensor_id', 2) ])
+  .send();
 ```

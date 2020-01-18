@@ -1,6 +1,5 @@
 
-// Commands
-module.exports = {
+module.exports.commands = {
   TS_CREATE: 'TS.CREATE',
   TS_ALTER: 'TS.ALTER',
   TS_ADD: 'TS.ADD',
@@ -10,9 +9,20 @@ module.exports = {
   TS_CREATERULE: 'TS.CREATERULE',
   TS_DELETERULE: 'TS.DELETERULE',
   TS_GET: 'TS.GET',
-  TS_MGET: 'TS_MGET',
+  TS_MGET: 'TS.MGET',
   TS_RANGE: 'TS.RANGE',
   TS_MRANGE: 'TS.MRANGE',
   TS_INFO: 'TS.INFO',
   TS_QUERYINDEX: 'TS.QUERYINDEX'
+};
+
+module.exports.keywords = {
+  AGGREGATION: 'AGGREGATION',
+  COUNT: 'COUNT',
+  FILTER: 'FILTER',
+  LABELS: 'LABELS',
+  RETENTION: 'RETENTION',
+  TIMESTAMP: 'TIMESTAMP',
+  UNCOMPRESSED: 'UNCOMPRESSED',
+  WITHLABELS: 'WITHLABELS'
 };

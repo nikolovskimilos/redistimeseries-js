@@ -1,6 +1,7 @@
 
-const { commands, keywords } = require('../../src/constants');
+const { commands, keywords } = require('../constants');
 const RedisTimeSeries = require('../../index');
+
 const { Aggregation } = RedisTimeSeries;
 
 const { AGGREGATION, COUNT } = keywords;
@@ -27,7 +28,7 @@ let rts = null;
 
 const validateQuery = (query) => {
   const [command, params] = rts.client.send_command.mock.calls[0];
-  expect([command, ...params].join(SIGN_SPACE)).toBe(query);
+  expect([command, ...params].join(SIGN_SPACE)).toBe(query.join(SIGN_SPACE));
 };
 
 
@@ -41,60 +42,68 @@ describe('range method tests', () => {
 
   it('should fetch range of time series for given key', async () => {
     const { key, fromTimestamp, toTimestamp } = TEST_PARAMS;
-    const query = `${TS_RANGE} ${key} ${fromTimestamp} ${toTimestamp}`;
+    const query = [TS_RANGE, key, fromTimestamp, toTimestamp];
 
-    await rts.range(key, fromTimestamp, toTimestamp);
+    await rts.range(key, fromTimestamp, toTimestamp).send();
     validateQuery(query);
   });
 
   it('should fetch N items in range of time series for given key', async () => {
     const { key, fromTimestamp, toTimestamp, count } = TEST_PARAMS;
-    const query = `${TS_RANGE} ${key} ${fromTimestamp} ${toTimestamp} ${COUNT} ${count}`;
+    const query = [TS_RANGE, key, fromTimestamp, toTimestamp, COUNT, count];
 
-    await rts.range(key, fromTimestamp, toTimestamp, { count });
+    await rts
+      .range(key, fromTimestamp, toTimestamp)
+      .count(count)
+      .send();
+
     validateQuery(query);
   });
 
   it('should fetch N items in range of time series for given key and aggregation', async () => {
     const { key, fromTimestamp, toTimestamp, count, aggregation } = TEST_PARAMS;
     const { type, timeBucket } = aggregation;
-    const aggregationQuery = `${AGGREGATION} ${type} ${timeBucket}`;
-    const query = `${TS_RANGE} ${key} ${fromTimestamp} ${toTimestamp} ${COUNT} ${count} ${aggregationQuery}`;
+    const aggregationQuery = [AGGREGATION, type, timeBucket];
+    const query = [TS_RANGE, key, fromTimestamp, toTimestamp, COUNT, count, ...aggregationQuery];
 
-    await rts.range(key, fromTimestamp, toTimestamp, { count, aggregation });
+    await rts
+      .range(key, fromTimestamp, toTimestamp)
+      .count(count)
+      .aggregation(type, timeBucket)
+      .send();
+
     validateQuery(query);
   });
 
   it('should fetch range of time series for given key and aggregation', async () => {
     const { key, fromTimestamp, toTimestamp, aggregation } = TEST_PARAMS;
     const { type, timeBucket } = aggregation;
-    const aggregationQuery = `${AGGREGATION} ${type} ${timeBucket}`;
-    const query = `${TS_RANGE} ${key} ${fromTimestamp} ${toTimestamp} ${aggregationQuery}`;
+    const aggregationQuery = [AGGREGATION, type, timeBucket];
+    const query = [TS_RANGE, key, fromTimestamp, toTimestamp, ...aggregationQuery];
 
-    await rts.range(key, fromTimestamp, toTimestamp, { aggregation });
+    await rts
+      .range(key, fromTimestamp, toTimestamp)
+      .aggregation(type, timeBucket)
+      .send();
+
     validateQuery(query);
   });
 
   it('should fail, no arguments', async () => {
-    await expect(rts.range()).rejects.toThrow();
+    await expect(rts.range().send()).rejects.toThrow();
   });
 
   it('should fail, no range timestamps', async () => {
-    await expect(rts.range(TEST_PARAMS.key)).rejects.toThrow();
+    await expect(rts.range(TEST_PARAMS.key).send()).rejects.toThrow();
   });
 
   it('should fail, no toTimestamp', async () => {
     const { key, fromTimestamp } = TEST_PARAMS;
-    await expect(rts.range(key, fromTimestamp)).rejects.toThrow();
-  });
-
-  it('should fail, wrong range', async () => {
-    const { key, fromTimestamp, toTimestamp } = TEST_PARAMS;
-    await expect(rts.range(key, toTimestamp, fromTimestamp)).rejects.toThrow();
+    await expect(rts.range(key, fromTimestamp).send()).rejects.toThrow();
   });
 
   it('should fail, count not valid', async () => {
     const { key, fromTimestamp, toTimestamp } = TEST_PARAMS;
-    await expect(rts.range(key, fromTimestamp, toTimestamp, { count: {} })).rejects.toThrow();
+    await expect(rts.range(key, fromTimestamp, toTimestamp).count(true).send()).rejects.toThrow();
   });
 });

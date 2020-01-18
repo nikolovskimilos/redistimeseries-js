@@ -24,8 +24,9 @@
   ],
   "main": "index.js",
   "scripts": {
-    "lint": "eslint --color ./src ./tests",
-    "lint-fix": "eslint --fix --color ./src ./tests",
+    "lint": "eslint --color ./src ./tests ./examples",
+    "lint-fix": "eslint --fix --color ./src ./tests ./examples",
+    "lint-watch": "eslint --fix -w --color ./src ./tests ./examples",
     "test": "NODE_PATH=src/ jest",
     "test-coverage": "NODE_PATH=src/ jest --coverage",
     "test-watch": "NODE_PATH=src/ jest --watchAll --bail"

@@ -1,6 +1,7 @@
 
-const { commands, keywords } = require('../../src/constants');
+const { commands, keywords } = require('../constants');
 const RedisTimeSeries = require('../../index');
+
 const { Aggregation, Filter } = RedisTimeSeries;
 
 const { AGGREGATION, FILTER, WITHLABELS, COUNT } = keywords;
@@ -26,15 +27,14 @@ const TEST_PARAMS = {
     value1: 22,
     value2: 23
   },
-  count: 20,
-  withLabels: true
+  count: 20
 };
 
 let rts = null;
 
 const validateQuery = (query) => {
   const [command, params] = rts.client.send_command.mock.calls[0];
-  expect([command, ...params].join(SIGN_SPACE)).toBe(query);
+  expect([command, ...params].join(SIGN_SPACE)).toBe(query.join(SIGN_SPACE));
 };
 
 
@@ -49,12 +49,16 @@ describe('mrange method tests', () => {
   it('should fetch range of multiple time series', async () => {
     const { fromTimestamp, toTimestamp, filter } = TEST_PARAMS;
     const { label1, label2 } = filter;
-    const query = `${TS_MRANGE} ${fromTimestamp} ${toTimestamp} ${FILTER} ${label1}= ${label2}!=`;
+    const query = [TS_MRANGE, fromTimestamp, toTimestamp, FILTER, `${label1}=`, `${label2}!=`];
 
-    await rts.mrange(fromTimestamp, toTimestamp, [
-      Filter.exists(label1),
-      Filter.notExists(label2)
-    ]);
+    await rts
+      .mrange(fromTimestamp, toTimestamp)
+      .filter([
+        Filter.exists(label1),
+        Filter.notExists(label2)
+      ])
+      .send();
+
     validateQuery(query);
   });
 
@@ -62,9 +66,14 @@ describe('mrange method tests', () => {
     const { fromTimestamp, toTimestamp, count, filter } = TEST_PARAMS;
     const { label1, value1 } = filter;
     const filterQuery = `${FILTER} ${label1}=${value1}`;
-    const query = `${TS_MRANGE} ${fromTimestamp} ${toTimestamp} ${COUNT} ${count} ${filterQuery}`;
+    const query = [TS_MRANGE, fromTimestamp, toTimestamp, COUNT, count, filterQuery];
 
-    await rts.mrange(fromTimestamp, toTimestamp, [Filter.equal(label1, value1)], { count });
+    await rts
+      .mrange(fromTimestamp, toTimestamp)
+      .count(count)
+      .filter([Filter.equal(label1, value1)])
+      .send();
+
     validateQuery(query);
   });
 
@@ -74,54 +83,59 @@ describe('mrange method tests', () => {
     const { label1, value1 } = filter;
 
     const filterQuery = `${FILTER} ${label1}!=${value1}`;
-    const aggregationQuery = `${AGGREGATION} ${type} ${timeBucket}`;
-    const query = `${TS_MRANGE} ${fromTimestamp} ${toTimestamp} ${COUNT} ${count} ${aggregationQuery} ${filterQuery}`;
+    const aggregationQuery = [AGGREGATION, type, timeBucket];
+    const query = [TS_MRANGE, fromTimestamp, toTimestamp, COUNT, count, ...aggregationQuery, filterQuery];
 
-    await rts.mrange(fromTimestamp, toTimestamp, [Filter.notEqual(label1, value1)], { count, aggregation });
+    await rts
+      .mrange(fromTimestamp, toTimestamp)
+      .filter([Filter.notEqual(label1, value1)])
+      .count(count)
+      .aggregation(type, timeBucket)
+      .send();
+
     validateQuery(query);
   });
 
   it('should fetch range of time series with labels for given key and aggregation', async () => {
-    const { fromTimestamp, toTimestamp, aggregation, withLabels, filter } = TEST_PARAMS;
+    const { fromTimestamp, toTimestamp, aggregation, filter } = TEST_PARAMS;
     const { type, timeBucket } = aggregation;
     const { label1, value1 } = filter;
 
     const filterQuery = `${FILTER} ${label1}!=${value1}`;
-    const aggregationQuery = `${AGGREGATION} ${type} ${timeBucket}`;
-    const query = `${TS_MRANGE} ${fromTimestamp} ${toTimestamp} ${aggregationQuery} ${WITHLABELS} ${filterQuery}`;
+    const aggregationQuery = [AGGREGATION, type, timeBucket];
+    const query = [TS_MRANGE, fromTimestamp, toTimestamp, ...aggregationQuery, WITHLABELS, filterQuery];
 
-    await rts.mrange(fromTimestamp, toTimestamp, [Filter.notEqual(label1, value1)], { aggregation, withLabels });
+    await rts
+      .mrange(fromTimestamp, toTimestamp)
+      .filter([Filter.notEqual(label1, value1)])
+      .withLabels()
+      .aggregation(type, timeBucket)
+      .send();
+
     validateQuery(query);
   });
 
   it('should fail, no arguments', async () => {
-    await expect(rts.mrange()).rejects.toThrow();
+    await expect(rts.mrange().send()).rejects.toThrow();
   });
 
   it('should fail, no toTimestamp', async () => {
     const { fromTimestamp } = TEST_PARAMS;
-    await expect(rts.mrange(fromTimestamp)).rejects.toThrow();
+    await expect(rts.mrange(fromTimestamp).send()).rejects.toThrow();
   });
 
-  it('should fail, wrong range', async () => {
+  it('should fail, no filter', async () => {
     const { fromTimestamp, toTimestamp } = TEST_PARAMS;
-    await expect(rts.mrange(toTimestamp, fromTimestamp)).rejects.toThrow();
+    await expect(rts.mrange(fromTimestamp, toTimestamp).send()).rejects.toThrow();
   });
 
   it('should fail, filter is empty', async () => {
     const { fromTimestamp, toTimestamp } = TEST_PARAMS;
-    await expect(rts.mrange(fromTimestamp, toTimestamp, [])).rejects.toThrow();
+    await expect(rts.mrange(fromTimestamp, toTimestamp).filter().send()).rejects.toThrow();
   });
 
-  it('should fail, withLabels not valid', async () => {
-    const { fromTimestamp, toTimestamp, filter } = TEST_PARAMS;
-    await expect(rts.mrange(
-      fromTimestamp,
-      toTimestamp,
-      [Filter.notExists(filter.label1)],
-      {
-        withLabels: {}
-      }
-    )).rejects.toThrow();
+  it('should fail, invalid filter ', async () => {
+    const { fromTimestamp, toTimestamp } = TEST_PARAMS;
+    await expect(rts.mrange(fromTimestamp, toTimestamp).filter().send()).rejects.toThrow();
   });
 });
