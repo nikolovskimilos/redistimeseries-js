@@ -22,7 +22,7 @@ const options = {
   port: 6379
 }
 
-const rtsClient = new RedisTimeSeries();
+const rtsClient = new RedisTimeSeries(options);
 const key = 'temperature';
 
 const updateTemperature = async () => {
@@ -57,6 +57,29 @@ const myFilter = [
 ];
 
 ```
+
+## Aggregation
+
+Possible aggregation values
+
+```javascript
+const { Aggregation } = require('redistimeseries-js');
+
+// Aggregation.AVG
+// Aggregation.SUM
+// Aggregation.MIN
+// Aggregation.MAX
+// Aggregation.RANGE
+// Aggregation.COUNT
+// Aggregation.FIRST
+// Aggregation.LAST
+// Aggregation.STDP
+// Aggregation.STDS
+// Aggregation.VARP
+// Aggregation.VARS
+
+```
+
 
 ## Methods
 
@@ -220,9 +243,13 @@ client.get('temperature:2:32').send();
 #### mget
 ```javascript
 // TS.MGET FILTER area_id=32
+<<<<<<< HEAD
 // 
 const RedisTimeSeries = require('redistimeseries-js');
 const { Filter } = RedisTimeSeries;
+=======
+const { Filter } = require('redistimeseries-js');
+>>>>>>> master
 
 // ...
 
