@@ -22,7 +22,6 @@ describe('RedisTimeSeries component tests', () => {
   });
 
   it('should create client with out options', async () => {
-
     expect(() => {
       rts = new RedisTimeSeries();
     }).not.toThrow();

@@ -4,23 +4,22 @@ const QuerySchema = require('../../src/QuerySchema');
 
 const TEST_PARAMS = {
   table: 'sometable',
-  send: (queryString) => { console.log('send query') }
+  send: (queryString) => queryString
 };
 
 const TEST_QS_1 = {
-  command: 'SELECT', 
+  command: 'SELECT',
   paramName: 'table',
-  paramValidator: (value) => typeof value === 'string',
+  paramValidator: (value) => typeof value === 'string'
 };
 
 const TEST_QS_2 = {
-  command: 'WHERE', 
+  command: 'WHERE',
   paramName: 'condition'
 };
 
 
 let select = null;
-
 
 
 describe('Query component tests', () => {
@@ -30,7 +29,7 @@ describe('Query component tests', () => {
     const where = QuerySchema
       .create(TEST_QS_2.command)
       .param(TEST_QS_2.paramName);
-    
+
     select = QuerySchema
       .create(TEST_QS_1.command)
       .param(TEST_QS_1.paramName, TEST_QS_1.paramValidator)
