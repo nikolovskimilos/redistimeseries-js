@@ -1,4 +1,6 @@
 ![Tests](https://github.com/nikolovskimilos/redistimeseries-js/workflows/Tests/badge.svg)
+[![npm version](https://badge.fury.io/js/redistimeseries-js.svg)](https://badge.fury.io/js/redistimeseries-js)
+
 
 # redistimeseries-js
 
