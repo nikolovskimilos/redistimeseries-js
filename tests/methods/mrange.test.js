@@ -49,7 +49,7 @@ describe('mrange method tests', () => {
   it('should fetch range of multiple time series', async () => {
     const { fromTimestamp, toTimestamp, filter } = TEST_PARAMS;
     const { label1, label2 } = filter;
-    const query = [TS_MRANGE, fromTimestamp, toTimestamp, FILTER, `${label1}=`, `${label2}!=`];
+    const query = [TS_MRANGE, fromTimestamp, toTimestamp, FILTER, `${label1}!=`, `${label2}=`];
 
     await rts
       .mrange(fromTimestamp, toTimestamp)

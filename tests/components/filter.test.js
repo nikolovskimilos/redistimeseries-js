@@ -17,11 +17,11 @@ describe('Filter component tests', () => {
   const { label1, label2, value1, value2 } = TEST_PARAMS;
 
   it('exists filter', async () => {
-    expect(Filter.exists(label1).toString()).toBe(`${label1}=`);
+    expect(Filter.exists(label1).toString()).toBe(`${label1}!=`);
   });
 
   it('notExists filter', async () => {
-    expect(Filter.notExists(label1).toString()).toBe(`${label1}!=`);
+    expect(Filter.notExists(label1).toString()).toBe(`${label1}=`);
   });
 
   it('equal filter', async () => {

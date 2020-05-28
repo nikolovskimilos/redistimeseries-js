@@ -37,7 +37,7 @@ describe('queryIndex method tests', () => {
 
   it('should fetch time series keys with given label', async () => {
     const { label1 } = TEST_PARAMS;
-    const query = [TS_QUERYINDEX, `${label1}=`];
+    const query = [TS_QUERYINDEX, `${label1}!=`];
 
     await rts.queryIndex([Filter.exists(label1)]).send();
     validateQuery(query);
@@ -45,7 +45,7 @@ describe('queryIndex method tests', () => {
 
   it('should fetch time series keys with multiple given labels', async () => {
     const { label1, label2 } = TEST_PARAMS;
-    const query = [TS_QUERYINDEX, `${label1}=`, `${label2}!=`];
+    const query = [TS_QUERYINDEX, `${label1}!=`, `${label2}=`];
 
     await rts.queryIndex([
       Filter.exists(label1),
