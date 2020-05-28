@@ -29,7 +29,7 @@ class Filter {
       throw new Error('exists filter requires label');
     }
 
-    return new Filter(`${label}=`);
+    return new Filter(`${label}!=`);
   }
 
   static notExists(label) {
@@ -37,7 +37,7 @@ class Filter {
       throw new Error('notExists filter requires label');
     }
 
-    return new Filter(`${label}!=`);
+    return new Filter(`${label}=`);
   }
 
   static in(label, arrayOfValues = []) {

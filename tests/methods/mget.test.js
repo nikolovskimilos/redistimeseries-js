@@ -38,7 +38,7 @@ describe('mget method tests', () => {
 
   it('should fetch time series with given label', async () => {
     const { label1 } = TEST_PARAMS;
-    const query = [TS_MGET, FILTER, `${label1}=`];
+    const query = [TS_MGET, FILTER, `${label1}!=`];
 
     await rts
       .mget()
@@ -49,7 +49,7 @@ describe('mget method tests', () => {
 
   it('should fetch time series with multiple given labels', async () => {
     const { label1, label2 } = TEST_PARAMS;
-    const query = [TS_MGET, FILTER, `${label1}=`, `${label2}!=`];
+    const query = [TS_MGET, FILTER, `${label1}!=`, `${label2}=`];
 
     await rts
       .mget()
