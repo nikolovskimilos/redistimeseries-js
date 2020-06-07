@@ -23,9 +23,9 @@ const options = {
   host: 'localhost',
   port: 6379
 }
-
+```
 or for redis cluster
-
+```
 // check base redis cluster client for options
 // https://github.com/gosquared/redis-clustr
 const options = {
