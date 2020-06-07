@@ -1,4 +1,5 @@
 const Redis = require('redis');
+const RedisClustr = require('redis-clustr');
 const Query = require('./Query');
 const commands = require('./commands');
 
@@ -21,7 +22,11 @@ class RedisTimeSeries {
    * Connect client to redis server
    */
   async connect() {
-    this.client = await Redis.createClient(this.options);
+    if ('cluster' in this.options) {
+      this.client = await new RedisClustr(this.options.cluster);
+    } else {
+      this.client = await Redis.createClient(this.options);
+    }
   }
 
   /**
