@@ -24,6 +24,21 @@ const options = {
   port: 6379
 }
 
+or for redis cluster
+
+// check base redis cluster client for options
+// https://github.com/gosquared/redis-clustr
+const options = {
+  cluster: {
+    servers: [
+      {
+        host: '127.0.0.1',
+        port: 7000
+      }
+    ]
+  }
+}
+
 const rtsClient = new RedisTimeSeries(options);
 const key = 'temperature';
 
