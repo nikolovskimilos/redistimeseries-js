@@ -25,7 +25,7 @@ const options = {
 }
 ```
 or for redis cluster
-```
+```javascript
 // check base redis cluster client for options
 // https://github.com/gosquared/redis-clustr
 const options = {
