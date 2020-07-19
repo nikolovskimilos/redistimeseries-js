@@ -121,9 +121,10 @@ client
 ```javascript
 // TS.ADD temperature:3:11 1548149183000 27 RETENTION 3600
 
-client.add('temperature:2:32', 1548149180000, 26, {
-  retention: 3600
-});
+client
+  .add('temperature:2:32', 1548149180000, 26)
+  .retention(3600)
+  .send();
 ```
 
 #### madd
@@ -261,7 +262,9 @@ client
 ```javascript
 // TS.INFO temperature:2:32
 
-client.info('temperature:2:32').send();
+client
+  .info('temperature:2:32')
+  .send();
 ```
 
 #### queryIndex
