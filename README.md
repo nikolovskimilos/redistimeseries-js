@@ -240,7 +240,9 @@ client
 ```javascript
 // TS.GET temperature:2:32
 
-client.get('temperature:2:32').send();
+client
+  .get('temperature:2:32')
+  .send();
 ```
 
 #### mget
