@@ -2,13 +2,13 @@
 const QuerySchema = require('../QuerySchema');
 const { Validator } = require('./utils');
 
-const { retention, labels, uncompressed } = require('./fragments');
+const { retention, labels, uncompressed, duplicatePolicy } = require('./fragments');
 
 const TS_CREATE = 'TS.CREATE';
 
 
 /**
- * TS.CREATE key [RETENTION retentionTime] [UNCOMPRESSED] [LABELS field value..]
+ * TS.CREATE key [RETENTION retentionTime] [UNCOMPRESSED] [DUPLICATE_POLICY duplicatePolicyType] [LABELS field value..]
  */
 module.exports = QuerySchema
   .create(TS_CREATE)
@@ -20,4 +20,5 @@ module.exports = QuerySchema
   )
   .subquery(retention)
   .subquery(uncompressed)
+  .subquery(duplicatePolicy)
   .subquery(labels);

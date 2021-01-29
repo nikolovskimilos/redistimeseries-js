@@ -2,8 +2,9 @@
 const { commands, keywords } = require('../constants');
 const RedisTimeSeries = require('../../index');
 
+const { DuplicatePolicy } = RedisTimeSeries;
 
-const { RETENTION, LABELS, UNCOMPRESSED } = keywords;
+const { RETENTION, LABELS, UNCOMPRESSED, DUPLICATE_POLICY } = keywords;
 const { TS_CREATE } = commands;
 
 const SIGN_SPACE = ' ';
@@ -14,6 +15,7 @@ const TEST_OPTIONS = {
 const TEST_PARAMS = {
   key: 'sometestkey',
   retention: 60,
+  duplicatePolicyType: DuplicatePolicy.LAST,
   labels: {
     room: 'livingroom',
     section: 2
@@ -70,6 +72,17 @@ describe('create method tests', () => {
     const query = [TS_CREATE, key, UNCOMPRESSED];
 
     await rts.create(key).uncompressed().send();
+    validateQuery(query);
+  });
+
+  it('should create time series with duplication policy', async () => {
+    const { key, duplicatePolicyType } = TEST_PARAMS;
+    const query = [TS_CREATE, key, DUPLICATE_POLICY, duplicatePolicyType];
+
+    await rts
+      .create(key)
+      .duplicatePolicy(duplicatePolicyType)
+      .send();
     validateQuery(query);
   });
 

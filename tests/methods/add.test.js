@@ -2,7 +2,9 @@
 const { commands, keywords } = require('../constants');
 const RedisTimeSeries = require('../../index');
 
-const { RETENTION, LABELS, UNCOMPRESSED } = keywords;
+const { OnDuplicate } = RedisTimeSeries;
+
+const { RETENTION, LABELS, UNCOMPRESSED, ON_DUPLICATE } = keywords;
 const { TS_ADD } = commands;
 
 
@@ -14,6 +16,7 @@ const TEST_OPTIONS = {
 const TEST_PARAMS = {
   key: 'sometestkey',
   retention: 60,
+  onDuplicate: OnDuplicate.MAX,
   labels: {
     room: 'livingroom',
     section: 2
@@ -64,6 +67,17 @@ describe('add method tests', () => {
     const query = [TS_ADD, key, timestamp, value, ...labelsQuery];
 
     await rts.add(key, timestamp, value).labels(labels).send();
+    validateQuery(query);
+  });
+
+  it('should add a value with an onDuplicate policy', async () => {
+    const { key, timestamp, value, onDuplicate } = TEST_PARAMS;
+    const query = [TS_ADD, key, timestamp, value, ON_DUPLICATE, onDuplicate];
+
+    await rts
+      .add(key, timestamp, value)
+      .onDuplicate(onDuplicate)
+      .send();
     validateQuery(query);
   });
 
