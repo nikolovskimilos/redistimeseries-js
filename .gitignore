@@ -106,3 +106,4 @@ dist
 # Jest coverage report
 coverage-report
 
+.idea

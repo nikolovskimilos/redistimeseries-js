@@ -8,7 +8,7 @@ const setExports = (schemas) => {
   Object.values(schemas).forEach((querySchema) => {
   	const schemaExports = querySchema.getExports();
   	if (schemaExports) {
-	  	Object.keys(schemaExports).forEach(name => 
+	  	Object.keys(schemaExports).forEach(name =>
 	  		module.exports[name] = schemaExports[name]
 	  	);
 	  }
@@ -16,8 +16,3 @@ const setExports = (schemas) => {
 }
 
 setExports(commands);
-
-
-
-
-

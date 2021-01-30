@@ -2,7 +2,7 @@
 const QuerySchema = require('../QuerySchema');
 const { Validator } = require('./utils');
 
-const { retention, labels, uncompressed } = require('./fragments');
+const { retention, labels, uncompressed, onDuplicate } = require('./fragments');
 
 const TS_ADD = 'TS.ADD';
 
@@ -28,4 +28,5 @@ module.exports = QuerySchema
   )
   .subquery(retention)
   .subquery(uncompressed)
+  .subquery(onDuplicate)
   .subquery(labels);
