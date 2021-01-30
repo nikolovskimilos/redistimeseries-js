@@ -1,11 +1,9 @@
-
 const QuerySchema = require('../QuerySchema');
 const { Validator } = require('./utils');
 
 const { retention, labels, uncompressed, onDuplicate } = require('./fragments');
 
 const TS_ADD = 'TS.ADD';
-
 
 /**
  * TS.ADD key timestamp value [RETENTION retentionTime] [LABELS field value..] [UNCOMPRESSED]

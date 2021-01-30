@@ -1,11 +1,9 @@
-
 const QuerySchema = require('../QuerySchema');
 const { Validator } = require('./utils');
 
 const { retention, labels, timestamp, uncompressed } = require('./fragments');
 
 const TS_DECRBY = 'TS.DECRBY';
-
 
 /**
  * TS.DECRBY key value [TIMESTAMP timestamp] [RETENTION retentionTime] [UNCOMPRESSED] [LABELS field value..]

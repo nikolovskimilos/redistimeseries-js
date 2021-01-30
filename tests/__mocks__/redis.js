@@ -1,4 +1,3 @@
-
 const Client = {
   send_command: jest.fn((command, args, callback) => callback())
 };

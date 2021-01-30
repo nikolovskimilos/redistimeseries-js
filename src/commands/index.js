@@ -1,4 +1,3 @@
-
 const add = require('./add');
 const alter = require('./alter');
 const create = require('./create');
@@ -13,7 +12,6 @@ const mget = require('./mget');
 const mrange = require('./mrange');
 const queryIndex = require('./queryIndex');
 const range = require('./range');
-
 
 module.exports = {
   add,

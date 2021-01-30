@@ -1,4 +1,3 @@
-
 class Validator {
   static isString(value) {
     return typeof value === 'string';

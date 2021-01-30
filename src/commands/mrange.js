@@ -1,4 +1,3 @@
-
 const QuerySchema = require('../QuerySchema');
 const { Validator } = require('./utils');
 const { count, aggregation, withLabels, filter } = require('./fragments');

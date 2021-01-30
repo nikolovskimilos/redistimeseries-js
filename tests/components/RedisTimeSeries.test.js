@@ -1,4 +1,3 @@
-
 const RedisMock = require('../__mocks__/redis');
 
 const RedisTimeSeries = require('../../index');

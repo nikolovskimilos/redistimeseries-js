@@ -1,6 +1,4 @@
-
 const QuerySchema = require('../../src/QuerySchema');
-
 
 const TEST_PARAMS = {
   command: 'SOME_COMMAND',
@@ -127,7 +125,6 @@ describe('QuerySchema component tests', () => {
 
     expect(select.getTemplateString()).toBe(templateString);
   });
-
 
   it('it should fail, no command', async () => {
     expect(() => QuerySchema.create()).toThrow();

@@ -16,7 +16,6 @@ class RedisTimeSeries {
     this.load(Object.values(commands));
   }
 
-
   /**
    * Connect client to redis server
    */
@@ -57,7 +56,6 @@ class RedisTimeSeries {
       });
     });
   }
-
 
   load(querySchemas) {
     this._loadedSchemas = this._loadedSchemas.concat(querySchemas);
