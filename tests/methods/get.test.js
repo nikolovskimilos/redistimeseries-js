@@ -1,4 +1,3 @@
-
 const { commands } = require('../constants');
 const RedisTimeSeries = require('../../index');
 
@@ -19,7 +18,6 @@ const validateQuery = (query) => {
   const [command, params] = rts.client.send_command.mock.calls[0];
   expect([command, ...params].join(SIGN_SPACE)).toBe(query.join(SIGN_SPACE));
 };
-
 
 describe('get method tests', () => {
   beforeEach(() => {

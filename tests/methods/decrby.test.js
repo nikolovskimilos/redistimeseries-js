@@ -1,11 +1,9 @@
-
 const { commands, keywords } = require('../constants');
 const RedisTimeSeries = require('../../index');
 
 const { TIMESTAMP, RETENTION, LABELS } = keywords;
 const { TS_DECRBY } = commands;
 const SIGN_SPACE = ' ';
-
 
 const TEST_OPTIONS = {
   host: 'localhost',
@@ -32,7 +30,6 @@ const validateQuery = (query) => {
   const { labels } = TEST_PARAMS;
   labelsQuery = [LABELS, 'room', labels.room, 'section', labels.section];
 };
-
 
 describe('decrBy method tests', () => {
   beforeEach(() => {

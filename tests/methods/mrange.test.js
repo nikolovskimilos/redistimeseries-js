@@ -1,4 +1,3 @@
-
 const { commands, keywords } = require('../constants');
 const RedisTimeSeries = require('../../index');
 
@@ -7,7 +6,6 @@ const { Aggregation, Filter } = RedisTimeSeries;
 const { AGGREGATION, FILTER, WITHLABELS, COUNT } = keywords;
 const { TS_MRANGE } = commands;
 const SIGN_SPACE = ' ';
-
 
 const TEST_OPTIONS = {
   host: 'localhost',
@@ -36,7 +34,6 @@ const validateQuery = (query) => {
   const [command, params] = rts.client.send_command.mock.calls[0];
   expect([command, ...params].join(SIGN_SPACE)).toBe(query.join(SIGN_SPACE));
 };
-
 
 describe('mrange method tests', () => {
   beforeEach(() => {

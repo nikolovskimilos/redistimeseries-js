@@ -1,6 +1,4 @@
-
 const { Filter } = require('../../index');
-
 
 const TEST_PARAMS = {
   label1: 'somelabel1',

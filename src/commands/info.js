@@ -1,9 +1,7 @@
-
 const QuerySchema = require('../QuerySchema');
 const { Validator } = require('./utils');
 
 const TS_INFO = 'TS.INFO';
-
 
 /**
  * TS.INFO key

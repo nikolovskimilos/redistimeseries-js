@@ -1,10 +1,8 @@
-
 const { commands } = require('../constants');
 const RedisTimeSeries = require('../../index');
 
 const { TS_INFO } = commands;
 const SIGN_SPACE = ' ';
-
 
 const TEST_OPTIONS = {
   host: 'localhost',
@@ -20,7 +18,6 @@ const validateQuery = (query) => {
   const [command, params] = rts.client.send_command.mock.calls[0];
   expect([command, ...params].join(SIGN_SPACE)).toBe(query.join(SIGN_SPACE));
 };
-
 
 describe('info method tests', () => {
   beforeEach(() => {

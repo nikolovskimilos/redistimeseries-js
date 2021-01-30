@@ -1,4 +1,3 @@
-
 const { commands, keywords } = require('../constants');
 const RedisTimeSeries = require('../../index');
 
@@ -6,7 +5,6 @@ const { OnDuplicate } = RedisTimeSeries;
 
 const { RETENTION, LABELS, UNCOMPRESSED, ON_DUPLICATE } = keywords;
 const { TS_ADD } = commands;
-
 
 const SIGN_SPACE = ' ';
 const TEST_OPTIONS = {
@@ -27,7 +25,6 @@ const TEST_PARAMS = {
 
 let rts = null;
 let labelsQuery = null;
-
 
 const validateQuery = (query) => {
   const [command, params] = rts.client.send_command.mock.calls[0];

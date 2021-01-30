@@ -1,8 +1,9 @@
-
 const { commands, keywords } = require('../constants');
 const RedisTimeSeries = require('../../index');
 
-const { RETENTION, LABELS } = keywords;
+const { DuplicatePolicy } = RedisTimeSeries;
+
+const { RETENTION, LABELS, DUPLICATE_POLICY } = keywords;
 const { TS_ALTER } = commands;
 
 const SIGN_SPACE = ' ';
@@ -16,7 +17,8 @@ const TEST_PARAMS = {
   labels: {
     room: 'livingroom',
     section: 2
-  }
+  }, 
+  duplicatePolicy: DuplicatePolicy.LAST
 };
 
 let rts = null;
@@ -26,7 +28,6 @@ const validateQuery = (query) => {
   const [command, params] = rts.client.send_command.mock.calls[0];
   expect([command, ...params].join(SIGN_SPACE)).toBe(query.join(SIGN_SPACE));
 };
-
 
 describe('alter method tests', () => {
   beforeEach(() => {
@@ -52,6 +53,14 @@ describe('alter method tests', () => {
     const query = [TS_ALTER, key, RETENTION, retention];
 
     await rts.alter(key).retention(retention).send();
+    validateQuery(query);
+  });
+
+  it('should alter time series duplicate policy', async () => {
+    const { key, retention, duplicatePolicy } = TEST_PARAMS;
+    const query = [TS_ALTER, key, DUPLICATE_POLICY, duplicatePolicy];
+
+    await rts.alter(key).duplicatePolicy(duplicatePolicy).send();
     validateQuery(query);
   });
 

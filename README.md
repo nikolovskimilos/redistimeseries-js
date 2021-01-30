@@ -83,6 +83,25 @@ const { Aggregation } = require('redistimeseries-js');
 ```
 
 
+## Duplicate Policy
+
+Possible duplicate policy values
+
+```javascript
+const { DuplicatePolicy } = require('redistimeseries-js');
+
+// DuplicatePolicy.BLOCK
+// DuplicatePolicy.FIRST
+// DuplicatePolicy.LAST
+// DuplicatePolicy.MIN
+// DuplicatePolicy.MAX
+// DuplicatePolicy.SUM
+
+```
+
+
+
+
 ## Methods
 
 Examples for each method are shown below, notice that optional parameters are always represented as object which is the last argument in the methods.
@@ -91,10 +110,14 @@ Examples for each method are shown below, notice that optional parameters are al
 ```javascript
 // TS.CREATE temperature:2:32 RETENTION 60000 LABELS sensor_id 2 area_id 32 UNCOMPRESSED
 
+const RedisTimeSeries = require('redistimeseries-js');
+const { DuplicatePolicy } = RedisTimeSeries;
+
 client
   .create('temperature:2:32')
   .retention(60000)
   .labels({ sensor_id: 2, area_id: 32 })
+  .duplicatePolicy(DuplicatePolicy.LAST)
   .uncompressed()
   .send();
 ```
@@ -113,8 +136,12 @@ client
 ```javascript
 // TS.ADD temperature:2:32 1548149180000 26 LABELS sensor_id 2 area_id 32
 
+const RedisTimeSeries = require('redistimeseries-js');
+const { DuplicatePolicy } = RedisTimeSeries;
+
 client
   .add('temperature:2:32', 1548149180000, 26)
+  .onDuplicate(DuplicatePolicy.SUM)
   .labels({ sensor_id: 2, area_id: 32 })
   .send();
 ```
