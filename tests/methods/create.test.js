@@ -1,4 +1,3 @@
-
 const { commands, keywords } = require('../constants');
 const RedisTimeSeries = require('../../index');
 
@@ -30,7 +29,6 @@ const validateQuery = (query) => {
   expect([command, ...params].join(SIGN_SPACE)).toBe(query.join(SIGN_SPACE));
 };
 
-
 describe('create method tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -41,7 +39,6 @@ describe('create method tests', () => {
     const { labels } = TEST_PARAMS;
     labelsQuery = [LABELS, 'room', labels.room, 'section', labels.section];
   });
-
 
   it('should create time series', async () => {
     const { key } = TEST_PARAMS;

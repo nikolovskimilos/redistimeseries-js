@@ -1,11 +1,9 @@
-
 const QuerySchema = require('../QuerySchema');
 const { Validator } = require('./utils');
 
 const { aggregation } = require('./fragments');
 
 const TS_CREATERULE = 'TS.CREATERULE';
-
 
 /**
  * TS.CREATERULE sourceKey destKey AGGREGATION aggregationType timeBucket

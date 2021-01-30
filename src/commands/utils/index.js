@@ -1,4 +1,3 @@
-
 const Validator = require('./Validator');
 const Filter = require('./Filter');
 

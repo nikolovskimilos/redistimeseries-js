@@ -1,11 +1,9 @@
-
 const QuerySchema = require('../QuerySchema');
 const { Validator } = require('./utils');
 
 const { retention, labels } = require('./fragments');
 
 const TS_ALTER = 'TS.ALTER';
-
 
 /**
  * TS.ALTER key [RETENTION retentionTime] [LABELS field value..]

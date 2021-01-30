@@ -1,9 +1,7 @@
-
 const { commands } = require('../constants');
 const RedisTimeSeries = require('../../index');
 
 const { TS_MADD } = commands;
-
 
 const SIGN_SPACE = ' ';
 const TEST_OPTIONS = {

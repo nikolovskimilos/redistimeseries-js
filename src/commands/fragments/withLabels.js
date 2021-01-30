@@ -1,6 +1,5 @@
 const QuerySchema = require('../../QuerySchema');
 
-
 const WITHLABELS = 'WITHLABELS';
 
 /**

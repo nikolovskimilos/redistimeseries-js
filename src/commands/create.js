@@ -1,11 +1,9 @@
-
 const QuerySchema = require('../QuerySchema');
 const { Validator } = require('./utils');
 
 const { retention, labels, uncompressed, duplicatePolicy } = require('./fragments');
 
 const TS_CREATE = 'TS.CREATE';
-
 
 /**
  * TS.CREATE key [RETENTION retentionTime] [UNCOMPRESSED] [DUPLICATE_POLICY duplicatePolicyType] [LABELS field value..]

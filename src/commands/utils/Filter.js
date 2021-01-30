@@ -1,4 +1,3 @@
-
 class Filter {
   constructor(filterString) {
     this.filterString = filterString;

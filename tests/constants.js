@@ -1,4 +1,3 @@
-
 module.exports.commands = {
   TS_CREATE: 'TS.CREATE',
   TS_ALTER: 'TS.ALTER',

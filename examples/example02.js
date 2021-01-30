@@ -9,7 +9,6 @@ const keyAvgTemp = 'temperature:avg';
 const keyMaxTemp = 'temperature:max';
 const keyMinTemp = 'temperature:min';
 
-
 const updateTemperature = async () => {
   const timestamp = Date.now();
   const value = Math.floor(Math.random() * 30);
@@ -48,12 +47,10 @@ const start = async () => {
     .aggregation(Aggregation.MAX, 60000)
     .send();
 
-
   await rtsClient
     .createRule(key, keyMinTemp)
     .aggregation(Aggregation.MIN, 60000)
     .send();
-
 
   // update temperature every second
   setInterval(updateTemperature, 1000);

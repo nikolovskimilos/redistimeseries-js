@@ -1,4 +1,3 @@
-
 const Query = require('../../src/Query');
 const QuerySchema = require('../../src/QuerySchema');
 
@@ -18,9 +17,7 @@ const TEST_QS_2 = {
   paramName: 'condition'
 };
 
-
 let select = null;
-
 
 describe('Query component tests', () => {
   beforeEach(() => {

@@ -1,4 +1,3 @@
-
 const QuerySchema = require('../QuerySchema');
 const { filter } = require('./fragments');
 
