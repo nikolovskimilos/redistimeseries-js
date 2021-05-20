@@ -32,7 +32,7 @@
     "test-watch": "NODE_PATH=src/ jest --watchAll --bail"
   },
   "dependencies": {
-    "redis": "^3.0.2"
+    "redis": "^3.1.2"
   },
   "devDependencies": {
     "eslint": "^7.18.0",
