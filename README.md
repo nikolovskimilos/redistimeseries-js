@@ -227,6 +227,7 @@ client
 #### mrange
 ```javascript
 // TS.MRANGE 1548149180000 1548149210000 AGGREGATION avg 5000 FILTER area_id=32 sensor_id!=1
+// TS.MREVRANGE 1548149180000 1548149210000 AGGREGATION avg 5000 FILTER area_id=32 sensor_id!=1
 
 const RedisTimeSeries = require('redistimeseries-js');
 const { Aggregation, Filter } = RedisTimeSeries;
@@ -245,6 +246,7 @@ client
 
 ```javascript
 // TS.MRANGE 1548149180000 1548149210000 AGGREGATION avg 5000 WITHLABELS FILTER area_id=32 sensor_id!=1
+// TS.MREVRANGE 1548149180000 1548149210000 AGGREGATION avg 5000 WITHLABELS FILTER area_id=32 sensor_id!=1
 
 const RedisTimeSeries = require('redistimeseries-js');
 const { Aggregation, Filter } = RedisTimeSeries;
@@ -252,7 +254,7 @@ const { Aggregation, Filter } = RedisTimeSeries;
 // ...
 
 client
-  .mrange('temperature:2:32', 1548149180000, 1548149210000)
+  .mrevrange('temperature:2:32', 1548149180000, 1548149210000)
   .aggregation(Aggregation.AVG, 5000)
   .withLabels()
   .filter([
