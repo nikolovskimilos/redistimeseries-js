@@ -212,6 +212,7 @@ client.deleteRule('temperature:2:32', 'temperature:avg').send();
 #### range
 ```javascript
 // TS.RANGE temperature:3:32 1548149180000 1548149210000 AGGREGATION avg 5000
+// TS.REVRANGE temperature:3:32 1548149180000 1548149210000 AGGREGATION avg 5000
 
 const RedisTimeSeries = require('redistimeseries-js');
 const { Aggregation } = RedisTimeSeries;
