@@ -10,8 +10,10 @@ const info = require('./info');
 const madd = require('./madd');
 const mget = require('./mget');
 const mrange = require('./mrange');
+const mrevrange = require('./mrevrange');
 const queryIndex = require('./queryIndex');
 const range = require('./range');
+const revrange = require('./revrange');
 
 module.exports = {
   add,
@@ -26,6 +28,8 @@ module.exports = {
   madd,
   mget,
   mrange,
+  mrevrange,
   queryIndex,
-  range
+  range,
+  revrange
 };
