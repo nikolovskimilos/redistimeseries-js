@@ -1,6 +1,6 @@
 {
   "name": "redistimeseries-js",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "JavaScript client for RedisTimeSeries",
   "author": "Milos Nikolovski",
   "license": "MIT",
