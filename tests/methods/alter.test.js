@@ -17,7 +17,7 @@ const TEST_PARAMS = {
   labels: {
     room: 'livingroom',
     section: 2
-  }, 
+  },
   duplicatePolicy: DuplicatePolicy.LAST
 };
 
@@ -57,7 +57,7 @@ describe('alter method tests', () => {
   });
 
   it('should alter time series duplicate policy', async () => {
-    const { key, retention, duplicatePolicy } = TEST_PARAMS;
+    const { key, duplicatePolicy } = TEST_PARAMS;
     const query = [TS_ALTER, key, DUPLICATE_POLICY, duplicatePolicy];
 
     await rts.alter(key).duplicatePolicy(duplicatePolicy).send();

@@ -25,11 +25,3 @@ module.exports = QuerySchema
     'duplicatePolicy',
     (value) => DuplicatePolicyTypes.includes(value)
   );
-
-
-DuplicatePolicy.BLOCK
-DuplicatePolicy.FIRST
-DuplicatePolicy.LAST
-DuplicatePolicy.MIN
-DuplicatePolicy.MAX
-DuplicatePolicy.SUM
